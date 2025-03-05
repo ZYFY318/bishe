@@ -13,15 +13,15 @@ let router = createRouter({
   },
 });
 
-// 添加全局前置守卫
-router.beforeEach(async (to, from, next) => {
-  const isAuthenticated = !!GET_TOKEN();
-  const userStore = useUserStore();
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next("/login");
-  } else {
-    next();
-  }
-});
+// // 添加全局前置守卫
+// router.beforeEach(async (to, from, next) => {
+//   const isAuthenticated = !!GET_TOKEN();
+//   const userStore = useUserStore();
+//   if (to.meta.requiresAuth && !isAuthenticated) {
+//     next("/login");
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;

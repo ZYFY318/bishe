@@ -24,7 +24,6 @@ let useUserStore = defineStore("User", {
     //用户登录
     async userLogin(data: loginForm) {
       let result: loginResponseData = await reqLogin(data);
-      console.log(result.data.token, result.code);
       if (result.code === 200) {
         //pinia仓库存储token
         this.token = result.data.token as string;
@@ -39,11 +38,10 @@ let useUserStore = defineStore("User", {
     //获取用户信息
     async userInfo() {
       const result = await reqUserInfo();
-      console.log("here", result.code, result.data);
       if (result.code === 200) {
         this.username = result.data.username;
-        // this.avatar = result.data.checkUser.avatar;
-        console.log("hello", this.username);
+        this.avatar = result.data.avatar;
+        console.log(this.avatar);
         return "ok";
       } else {
         return Promise.reject("获取用户信息失败");

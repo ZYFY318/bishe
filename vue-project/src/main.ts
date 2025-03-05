@@ -17,5 +17,5 @@ app.use(ElementPlus, {
 app.use(createPinia());
 app.use(router);
 app.use(globalComponents);
-
+import "./permission";
 app.mount("#app");
