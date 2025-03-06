@@ -77,5 +77,10 @@ public class UserController {
 
         return ResponseMessage.success(userInfo);
     }
+    @PostMapping("/logout")
+    public ResponseMessage<String> logout() {
+        return ResponseMessage.success("登出成功");
+    }
+
 }
 

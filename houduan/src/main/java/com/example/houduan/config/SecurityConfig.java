@@ -17,8 +17,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // 禁用CSRF（前后端分离项目通常不需要）
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/login").permitAll() // 放行登录接口
-                        .requestMatchers("/user/info").permitAll()  // ✅ 要求认证
+                        .requestMatchers("/user","/user/**").permitAll() // 放行登录接口
+//                        .requestMatchers("/user/info").permitAll()  // ✅ 要求认证
+                        .requestMatchers("/question,","/question/**").permitAll()
                         .anyRequest().authenticated() // 其他接口需认证
                 );
         return http.build();
