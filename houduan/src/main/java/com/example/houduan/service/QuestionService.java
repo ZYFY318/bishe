@@ -6,6 +6,11 @@ import com.example.houduan.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -52,4 +57,8 @@ public class QuestionService implements IQuestionService {
         return null;  // 如果没有找到该题目，则返回 null
     }
 
+    @Override
+    public Page getQuestionsByPage(Pageable pageable) {
+        return questionRepository.findAll(pageable);
+    }
 }

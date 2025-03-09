@@ -4,9 +4,15 @@ import com.example.houduan.pojo.Question;
 import com.example.houduan.pojo.ResponseMessage;
 import com.example.houduan.pojo.dto.QuestionDto;
 import com.example.houduan.service.IQuestionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -15,6 +21,15 @@ import java.util.List;
 public class QuestionController {
     @Autowired
     IQuestionService questionService;
+
+    @GetMapping("/page/{page}/{limit}")
+    public ResponseMessage<Page<Question>> getQuestionsByPage(
+            @PathVariable int page,
+            @PathVariable int limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit); // Spring Data Page 是从 0 开始的
+        Page<Question> questionPage = questionService.getQuestionsByPage(pageable);
+        return ResponseMessage.success(questionPage);
+    }
     // 获取所有题目
     @GetMapping
     public List<Question> getAllQuestions() {

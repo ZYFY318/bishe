@@ -4,6 +4,9 @@ package com.example.houduan.service;
 import com.example.houduan.pojo.Question;
 import com.example.houduan.pojo.dto.QuestionDto;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface IQuestionService {
@@ -19,4 +22,6 @@ public interface IQuestionService {
 
     // 更新题目
     Question updateQuestion(Long id, QuestionDto questionDto);
+
+    Page getQuestionsByPage(Pageable pageable);
 }
