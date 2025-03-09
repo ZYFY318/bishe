@@ -46,4 +46,8 @@ const logout = () => {
     $router.push({ path: '/login', query: { redirect: $route.path } })
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+button {
+    background-color: transparent;
+}
+</style>

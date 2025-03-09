@@ -5,6 +5,7 @@ import { GET_TOKEN } from "@/utils/token";
 enum API {
   LOGIN_URL = "/user/login",
   USERINFO_URL = "/user/info",
+  LOGOUT_URL = "/user/logout",
 }
 
 export const reqLogin = (data: loginForm) =>
@@ -16,3 +17,7 @@ export const reqUserInfo = () =>
       token: GET_TOKEN(),
     },
   });
+
+export const reqLogout = () => {
+  request.post<any, any>(API.LOGOUT_URL);
+};

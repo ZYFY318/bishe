@@ -59,7 +59,7 @@ export const constantRoute = [
     name: "Screen",
     meta: {
       hidden: false,
-      title: "数据大屏",
+      title: "用户数据",
       icon: "Platform",
     },
   },
@@ -112,7 +112,7 @@ export const constantRoute = [
     name: "Product",
     meta: {
       hidden: false,
-      title: "商品管理",
+      title: "教学管理",
       icon: "Goods",
     },
     redirect: "/product/trademark",
@@ -123,7 +123,7 @@ export const constantRoute = [
         name: "Trademark",
         meta: {
           hidden: false,
-          title: "品牌管理",
+          title: "教学管理",
           icon: "ShoppingCartFull",
         },
       },
@@ -133,7 +133,7 @@ export const constantRoute = [
         name: "Attr",
         meta: {
           hidden: false,
-          title: "属性管理",
+          title: "试题管理",
           icon: "ChromeFilled",
         },
       },

@@ -76,6 +76,7 @@ const userStore = useUserStore();
     background-color: greenyellow;
     padding: 20px;
     overflow: auto;
+
 }
 
 .el-menu {

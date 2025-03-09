@@ -23,7 +23,7 @@ watch(() => LayOutSettingStore.refresh as any, () => {
 })
 </script>
 
-<style>
+<style scoped lang="scss">
 /* 动画效果 */
 .fade-enter-active,
 .fade-leave-active {
@@ -43,5 +43,10 @@ watch(() => LayOutSettingStore.refresh as any, () => {
 .fade-enter-to {
     opacity: 1;
     transform: scale(1);
+}
+
+#app {
+    display: flex;
+    justify-content: center;
 }
 </style>

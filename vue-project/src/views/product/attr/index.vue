@@ -1,5 +1,5 @@
 <template>
-    <div class="login_container">
+    <div class="test">
         <h1>attr</h1>
     </div>
 </template>
@@ -8,4 +8,9 @@
 
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.test {
+    margin: 0, auto;
+    justify-content: center
+}
+</style>

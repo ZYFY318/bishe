@@ -7,7 +7,6 @@
                     <component :is="item.meta.icon"></component>
                 </el-icon>
                 <template #title>
-
                     <span>{{ item.meta.title }}</span>
                 </template>
             </el-menu-item>
@@ -19,8 +18,7 @@
                 <el-icon>
                     <component :is="item.children[0].meta.icon"></component>
                 </el-icon>
-                <template>
-
+                <template #title>
                     <span>{{ item.children[0].meta.title }}</span>
                 </template>
             </el-menu-item>
