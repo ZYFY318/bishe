@@ -1,6 +1,6 @@
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import type { Question } from "@/api/product/trademark/type";
-import { reqQuestion } from "@/api/product/trademark";
+import { reqAllQuestion, reqQuestion } from "@/api/product/trademark";
 
 export const useQuestion = () => {
   const pageNo = ref(1);
@@ -10,13 +10,18 @@ export const useQuestion = () => {
 
   const getQuestion = async () => {
     let result = await reqQuestion(pageNo.value, limit.value);
-    console.log(result);
     if (result.code === 200) {
       total.value = result.data.totalElements;
-      questionArr.value = result.data.content;
-      console.log("当前页码:", pageNo.value);
-      console.log("总数据量:", total.value);
-      console.log("当前页数据:", questionArr.value);
+
+      // 关键修改：将接口数据转为响应式对象
+      // result.data.content.forEach((element) => {
+      //   console.log({ ...element });
+      // });
+      questionArr.value = result.data.content.map((item: any) =>
+        reactive({ ...item })
+      );
+      // console.log(questionArr.value);
+      // console.log("响应式数组:", questionArr.value);
     }
   };
 

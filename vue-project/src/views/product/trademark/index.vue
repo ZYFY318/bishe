@@ -50,10 +50,10 @@
       <!-- 操作列 -->
       <el-table-column label="操作" width="180" align="center">
         <template #default="{ row, $index }">
-          <el-button type="primary" size="small" icon="Edit" @click="editQuestion(row)"
+          <el-button type="primary" size="small" icon="Edit" @click="openEditDialog(row)"
             style="font-size: 16px; padding: 5px 8px;">
           </el-button>
-          <el-button type="danger" size="small" icon="Delete" @click="deleteQuestion(row.id)"
+          <el-button type="danger" size="small" icon="Delete" @click="handleDeleteQuestion(row.id)"
             style="font-size: 16px; padding: 5px 8px;">
           </el-button>
         </template>
@@ -66,8 +66,8 @@
       @current-change="handleCurrentChange" style="margin-top: 15px; text-align: right" />
 
     <!-- 编辑题目对话框 -->
-    <!-- <el-dialog v-model="editDialogVisible" title="编辑题目" width="500px">
-      <el-form :model="editForm">
+    <el-dialog v-model="editDialogVisible" title="编辑题目">
+      <el-form ref="editFormRef" :model="editForm">
         <el-form-item label="题目名称">
           <el-input v-model="editForm.title" />
         </el-form-item>
@@ -84,16 +84,19 @@
         <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="saveEdit">保存</el-button>
       </template>
-    </el-dialog> -->
+    </el-dialog>
+
   </el-card>
 </template>
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import { useQuestion } from '@/views/product/trademark/hook/useQuestion'
 import { questionRules } from '@/views/product/trademark/utils/questionValidators'
-import { addQuestion } from '@/api/product/trademark'
+import { addQuestion, deleteQuestion, reqAllQuestion, reqQuestion } from '@/api/product/trademark'
 import { useAddQuestionForm } from './hook/useAddQuestionForm'
+import { useEditQuestion } from './hook/useEditQuetion'
+
 const {
   pageNo,
   limit,
@@ -113,9 +116,51 @@ const {
 } = useAddQuestionForm(getQuestion)
 
 
+const {
+  dialogVisible: editDialogVisible,
+  formRef: editFormRef,
+  formData: editForm,
+  open: openEditDialog,
+  submit: saveEdit
+} = useEditQuestion(getQuestion);
+
+
+const handleDeleteQuestion = async (id: number) => {
+  try {
+    // 确认框
+    await ElMessageBox.confirm("确定要删除该题目吗？", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+
+    // 调用后端删除 API
+    console.log("here", questionArr.value.length, id);
+    console.log(questionArr.value);
+    await deleteQuestion(id);
+
+    // const index = questionArr.value.findIndex(q => q.id === id);
+    // if (index !== -1) {
+    //   questionArr.value.splice(index, 1); // 触发响应式更新
+    // }
+    getQuestion();
+    questionArr.value = questionArr.value.filter(q => q.id !== id);
+    console.log("after", questionArr.value.length);
+    console.log(questionArr.value);
+    // 成功后刷新数据
+    ElMessage.success("删除成功");
+
+  } catch (error) {
+    console.error("删除失败:", error);
+    ElMessage.error("删除失败");
+  }
+};
+
+
 // 打开对话框时加载初始数据
 onMounted(() => {
-  getQuestion()
+  getQuestion();
+
 })
 
 
