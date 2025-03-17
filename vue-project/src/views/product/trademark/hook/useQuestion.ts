@@ -12,16 +12,7 @@ export const useQuestion = () => {
     let result = await reqQuestion(pageNo.value, limit.value);
     if (result.code === 200) {
       total.value = result.data.totalElements;
-
-      // 关键修改：将接口数据转为响应式对象
-      // result.data.content.forEach((element) => {
-      //   console.log({ ...element });
-      // });
-      questionArr.value = result.data.content.map((item: any) =>
-        reactive({ ...item })
-      );
-      // console.log(questionArr.value);
-      // console.log("响应式数组:", questionArr.value);
+      questionArr.value = result.data.content;
     }
   };
 

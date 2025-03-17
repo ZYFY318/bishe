@@ -48,5 +48,6 @@ watch(() => LayOutSettingStore.refresh as any, () => {
 #app {
     display: flex;
     justify-content: center;
+
 }
 </style>

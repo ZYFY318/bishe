@@ -123,7 +123,7 @@ export const constantRoute = [
         name: "Trademark",
         meta: {
           hidden: false,
-          title: "教学管理",
+          title: "题目管理",
           icon: "ShoppingCartFull",
         },
       },
@@ -153,7 +153,7 @@ export const constantRoute = [
         name: "Sku",
         meta: {
           hidden: false,
-          title: "SKU管理",
+          title: "测试",
           icon: "Orange",
         },
       },

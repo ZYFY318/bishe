@@ -1,8 +1,10 @@
 <template>
     <div class="layout_container">
         <!-- 左侧菜单 -->
-        <div class="layout_slider">
+        <div class="layout_slider" :class="{ fold: LayOutSettingStore.fold }">
             <Logo></Logo>
+            <!-- 展示菜单 -->
+            <!-- 滚动组件 -->
             <el-scrollbar class="scrollbar">
                 <!-- 根据路由动态生成路由 -->
                 <el-menu :collapse="LayOutSettingStore.fold" :default-active="$route.path" background-color='#e64980'
@@ -11,6 +13,7 @@
                 </el-menu>
             </el-scrollbar>
         </div>
+
         <!-- 主内容区域 -->
         <div class="layout_content">
             <!-- 顶部导航 -->
@@ -24,16 +27,23 @@
         </div>
     </div>
 </template>
+
 <script setup lang="ts">
-import useLayOutSettingStore from '@/stores/modules/setting';
+
+import { useRoute } from 'vue-router';
 import Logo from './logo/index.vue'
 import Menu from './menu/index.vue'
+//获取用户相关的小仓库
+import useUserStore from '@/stores/modules/user';
 import Main from './main/index.vue'
 import Tabbar from './tabbar/index.vue'
-import useUserStore from '@/stores/modules/user';
+import useLayOutSettingStore from '@/stores/modules/setting';
 const LayOutSettingStore = useLayOutSettingStore();
+//获取路由对象
+let $router = useRoute();
 const userStore = useUserStore();
 </script>
+
 <style lang="scss">
 .layout_container {
     display: flex;
@@ -76,7 +86,7 @@ const userStore = useUserStore();
     background-color: greenyellow;
     padding: 20px;
     overflow: auto;
-
+    vertical-align: middle;
 }
 
 .el-menu {
