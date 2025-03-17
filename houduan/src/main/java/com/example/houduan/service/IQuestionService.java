@@ -24,4 +24,6 @@ public interface IQuestionService {
     Question updateQuestion(Long id, QuestionDto questionDto);
 
     Page getQuestionsByPage(Pageable pageable);
+
+    List<Question> getRandomQuestions(int num);
 }

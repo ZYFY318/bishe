@@ -58,6 +58,11 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
+    public List<Question> getRandomQuestions(int num) {
+        return questionRepository.findRandomQuestions(num);
+    }
+
+    @Override
     public Page getQuestionsByPage(Pageable pageable) {
         return questionRepository.findAll(pageable);
     }

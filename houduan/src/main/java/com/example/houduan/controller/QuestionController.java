@@ -30,11 +30,20 @@ public class QuestionController {
         Page<Question> questionPage = questionService.getQuestionsByPage(pageable);
         return ResponseMessage.success(questionPage);
     }
-    // 获取所有题目
-    @GetMapping
-    public List<Question> getAllQuestions() {
-        return questionService.getAllQuestions();
+    // 获取随机题目
+    @GetMapping("/random/{num}")
+    public ResponseMessage<List<Question>> getRandomQuestions(@PathVariable int num) {
+        List<Question> randomQuestions = questionService.getRandomQuestions(num);
+        return ResponseMessage.success(randomQuestions);
     }
+
+    // 获取所有题目
+    @GetMapping("/page/")
+    public ResponseMessage<List<Question>> getAllQuestions() {
+        List<Question> allQuestions = questionService.getAllQuestions();
+        return ResponseMessage.success(allQuestions); // 使用 ResponseMessage.success() 包装返回值
+    }
+
     // 添加题目
     @PostMapping
     public ResponseMessage<Question> addQuestion(@RequestBody QuestionDto questionDto) {
