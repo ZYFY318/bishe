@@ -23,6 +23,8 @@ public class User {
     private List<String> buttons;
     @ElementCollection
     private List<String> routes;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExamResult> examResults;
 
     private String token; // 可选：如果需持久化Token（推荐使用JWT替代）
 }
