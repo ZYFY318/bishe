@@ -1,46 +1,27 @@
 package com.example.houduan.pojo;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
+@Data
+@AllArgsConstructor  // 自动生成包含所有字段的构造函数
 public class ResponseMessage<T> {
     private Integer code;
     private String message;
+    private String errorMessage; // 错误信息字段
     private T data;
 
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public ResponseMessage(Integer code, String message, T data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
-    }
-
+    // 成功的响应方法
     public static <T> ResponseMessage<T> success(T data) {
-            return new ResponseMessage(HttpStatus.OK.value(), "success!", data);
+        return new ResponseMessage<>(HttpStatus.OK.value(), "success!", null, data);
     }
+
     public static <T> ResponseMessage<T> success() {
-        return new ResponseMessage(HttpStatus.OK.value(), "success!", null);
+        return new ResponseMessage<>(HttpStatus.OK.value(), "success!", null, null);
+    }
+
+    // 错误的响应方法
+    public static <T> ResponseMessage<T> error(Integer code, String message, String errorMessage) {
+        return new ResponseMessage<>(code, message, errorMessage, null);
     }
 }
