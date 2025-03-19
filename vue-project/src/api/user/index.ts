@@ -18,6 +18,4 @@ export const reqUserInfo = () =>
     },
   });
 
-export const reqLogout = () => {
-  request.post<any, any>(API.LOGOUT_URL);
-};
+export const reqLogout = () => request.post<any>(API.LOGOUT_URL);

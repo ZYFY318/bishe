@@ -3,13 +3,16 @@
     <!-- 选择题目数量页面 -->
     <div v-if="!isTesting" class="selection-page">
       <div class="selection-card">
-        <el-button type="primary" style="margin-top: 1rem;" @click="startTest">开始测试</el-button>
+        <el-button type="primary" style="margin-top: 1rem; width: 50%;" @click="startTest">开始测试</el-button>
+        <div>
+          <el-radio-group v-model="selectedNum" size="medium" class="el-group">
+            <el-radio-button label="3">3题</el-radio-button>
+            <el-radio-button label="5">5题</el-radio-button>
+            <el-radio-button label="10">10题</el-radio-button>
+          </el-radio-group>
+        </div>
       </div>
-      <el-radio-group v-model="selectedNum" size="medium" class="el-group" style="margin-top: 1rem;">
-        <el-radio-button label="3">3题</el-radio-button>
-        <el-radio-button label="5">5题</el-radio-button>
-        <el-radio-button label="10">10题</el-radio-button>
-      </el-radio-group>
+
     </div>
 
     <!-- 试卷内容页面 -->
@@ -122,6 +125,9 @@ const submitTest = () => {
 /* 选择题目数量页面 */
 .main {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .selection-page {
@@ -129,14 +135,24 @@ const submitTest = () => {
   flex-direction: column;
   background-color: aliceblue;
   text-align: center;
+  /* align-items: center; */
+  justify-content: center;
+  width: 60%;
+
 }
 
 .selection-card {
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 10pc;
 }
 
 .el-group {
   width: 100%;
+  margin-top: 1rem;
 }
 
 /* 头部导航栏样式 */
@@ -173,6 +189,7 @@ const submitTest = () => {
   flex: 1;
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   border-radius: 10px;
 }

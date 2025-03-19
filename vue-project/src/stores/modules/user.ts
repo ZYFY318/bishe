@@ -1,7 +1,7 @@
 //创建用户相关仓库
 import { defineStore } from "pinia";
 //引入接口
-import { reqLogin, reqUserInfo } from "@/api/user";
+import { reqLogin, reqLogout, reqUserInfo } from "@/api/user";
 //引入数据类型
 import type { loginForm, loginResponseData } from "@/api/user/type";
 import type { UserState } from "./types/type";
@@ -17,6 +17,7 @@ let useUserStore = defineStore("User", {
       menuRoutes: constantRoute,
       username: "",
       avatar: "",
+      userId: 0,
     };
   },
   //异步|逻辑
@@ -41,6 +42,7 @@ let useUserStore = defineStore("User", {
       if (result.code === 200) {
         this.username = result.data.username;
         this.avatar = result.data.avatar;
+        this.userId = result.data.userId;
         console.log(this.avatar);
         return "ok";
       } else {
@@ -48,10 +50,11 @@ let useUserStore = defineStore("User", {
       }
     },
     //退出登录
-    userLogout() {
+    async userLogout() {
       this.token = "";
       this.username = "";
       this.avatar = "";
+      await reqLogout();
       REMOVE_TOKEN();
     },
   },
