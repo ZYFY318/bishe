@@ -22,4 +22,6 @@ public class ExamResult {
 
     private Integer duration; // 用时（单位：秒）
 
+    private Integer examType; //1.小测试 2.中测试 3.大测试
+
 }

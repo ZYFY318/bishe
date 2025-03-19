@@ -2,6 +2,8 @@ package com.example.houduan.controller;
 
 import com.example.houduan.pojo.ExamResult;
 import com.example.houduan.pojo.ResponseMessage;
+import com.example.houduan.pojo.dto.ExamResultDto;
+import com.example.houduan.pojo.dto.ExamResultResponseDto;
 import com.example.houduan.service.ExamResultService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,19 +23,20 @@ public class ExamResultController {
 
     // 获取用户的所有考试结果
     @GetMapping("/user/{userId}")
-    public ResponseMessage<List<ExamResult>> getUserExamResults(@PathVariable Integer userId) {
-        List<ExamResult> results = examResultService.getUserExamResults(userId);
+    public ResponseMessage<List<ExamResultResponseDto>> getUserExamResults(@PathVariable Integer userId) {
+        List<ExamResultResponseDto> results = examResultService.getUserExamResults(userId);
         if (results.isEmpty()) {
             return ResponseMessage.error(HttpStatus.NOT_FOUND.value(), "未找到考试成绩", "没有该用户的考试记录");
         }
+//        System.out.println(results);
         return ResponseMessage.success(results);
     }
 
     // 保存考试成绩
     @PostMapping("/save")
-    public ResponseMessage<ExamResult> saveExamResult(@RequestBody ExamResult examResult) {
+    public ResponseMessage<ExamResultResponseDto> saveExamResult(@RequestBody ExamResultDto examResultDto) {
         try {
-            ExamResult savedExamResult = examResultService.saveExamResult(examResult);
+            ExamResultResponseDto savedExamResult = examResultService.saveExamResult(examResultDto);
             return ResponseMessage.success(savedExamResult);
         } catch (DataIntegrityViolationException e) {
             // 外键约束错误，说明user_id无效或不存在
