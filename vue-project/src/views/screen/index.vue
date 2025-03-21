@@ -1,6 +1,6 @@
 <template>
-    <div class="app">
-        <div ref="chart" style="width: 100%; height: 100%;"></div>
+    <div class="ap21">
+        <div ref="chart" class="chart"></div>
         <div>
             <button @click="setExamType(1)">小测试</button>
             <button @click="setExamType(2)">中测试</button>
@@ -34,6 +34,7 @@ const fetchData = async () => {
         const response = await reqUserExamResults(userId);
         console.log(response);
         chartData.value = response.data.filter(item => item.examType === examType.value);
+        console.log(chartData.value);
         updateChart();
     } catch (error) {
         console.error('获取数据失败', error);
@@ -64,6 +65,7 @@ const setDataType = (type) => {
 };
 
 onMounted(() => {
+    console.log('here');
     chartInstance.value = echarts.init(chart.value);
     fetchData();
 });
@@ -72,14 +74,20 @@ onMounted(() => {
 watch([examType, dataType, userId], fetchData);
 </script>
 
-<style>
-app {
-    width: 100%;
+<style scoped>
+.ap21 {
+    flex: 0.5;
+    height: 400px;
 }
 
 button {
     margin: 5px;
     padding: 8px;
     cursor: pointer;
+}
+
+.chart {
+    height: 300px;
+    width: 600px;
 }
 </style>

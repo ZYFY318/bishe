@@ -19,7 +19,9 @@
     <el-header v-if="isTesting" class="header">
       <el-button type="danger" @click="exitTest">退出答题</el-button>
       <div class="header-right">
-        <el-button type="success" style="width: 60px;" @click="submitTest">交卷</el-button>
+        <el-button type="success" style="width: 60px;" @click="submitTest" :disabled="isSubmitted">
+          交卷
+        </el-button>
       </div>
     </el-header>
 
@@ -59,7 +61,9 @@
 <script setup>
 import { reqRandomQuestion } from '@/api/product/trademark';
 import { ref } from 'vue';
-
+import { reqSaveExamResult } from '@/api/examResult';
+import { ElMessage } from 'element-plus';
+import useUserStore from '@/stores/modules/user';
 const isTesting = ref(false); // 是否在答题页面
 const isSubmitted = ref(false); // 是否已交卷
 const selectedNum = ref(3); // 用户选择的题目数量
@@ -69,7 +73,7 @@ const score = ref(0); // 分数
 const correctCount = ref(0); // 答对题目数
 const timeUsed = ref(0); // 用时
 let startTime = 0;
-
+let useStore = useUserStore();
 // 开始测试
 const startTest = async () => {
   try {
@@ -107,27 +111,54 @@ const selectOption = (questionIndex, optionIndex) => {
 };
 
 // 交卷
-const submitTest = () => {
+const submitTest = async () => {
+  const examTypeMap = { 3: 1, 5: 2, 10: 3 };
+  const examType = examTypeMap[selectedNum.value] || 1; // 默认值为 1
   isSubmitted.value = true;
   let correct = 0;
+
   Object.keys(selectedAnswers.value).forEach(index => {
     if (selectedAnswers.value[index] === questions.value[index].correctIndex) {
       correct++;
     }
   });
+
   correctCount.value = correct;
   score.value = Math.round((correct / questions.value.length) * 100); // 计算分数
   timeUsed.value = Math.round((Date.now() - startTime) / 1000); // 计算用时
+
+  // 构造考试成绩对象
+  const examResult = {
+    userId: useStore.userId, // 这里应该是当前用户的ID，你可以根据你的项目逻辑获取
+    examDate: new Date().toISOString(), // 当前时间
+    score: score.value,
+    duration: timeUsed.value,
+    examType: examType,
+  };
+
+  try {
+    const response = await reqSaveExamResult(examResult);
+    if (response.code === 200) {
+      ElMessage.success('考试成绩已保存！');
+    } else {
+      ElMessage.error('保存成绩失败！');
+    }
+  } catch (error) {
+    console.error("提交考试成绩失败:", error);
+    ElMessage.error('提交失败，请稍后重试');
+  }
 };
 </script>
 
 <style scoped>
 /* 选择题目数量页面 */
 .main {
-  width: 100%;
+  width: 200%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
+
 }
 
 .selection-page {

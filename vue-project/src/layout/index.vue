@@ -87,6 +87,9 @@ const userStore = useUserStore();
     padding: 20px;
     overflow: auto;
     vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .el-menu {

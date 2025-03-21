@@ -47,7 +47,8 @@ watch(() => LayOutSettingStore.refresh as any, () => {
 
 #app {
     display: flex;
-    justify-content: center;
-
+    // justify-content: center;
+    // align-items: center;
+    text-align: center;
 }
 </style>
