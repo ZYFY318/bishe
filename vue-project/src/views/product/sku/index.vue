@@ -153,12 +153,12 @@ const submitTest = async () => {
 <style scoped>
 /* 选择题目数量页面 */
 .main {
-  width: 200%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
-
+  align-items: center;
 }
 
 .selection-page {
@@ -168,7 +168,7 @@ const submitTest = async () => {
   text-align: center;
   /* align-items: center; */
   justify-content: center;
-  width: 60%;
+  /* width: 60%; */
 
 }
 

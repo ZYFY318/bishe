@@ -2,10 +2,10 @@
     <el-button type="primary" size="small" icon="Refresh" circle @click="update"></el-button>
     <el-button type="primary" size="small" icon="FullScreen" circle @click="fullScreen"></el-button>
     <el-button type="primary" size="small" icon="Setting" circle></el-button>
-    <img :src="userStore.avatar" style="width: 20px; height: 20px; margin: 0px 10px;">
+    <img :src="userStore.avatar" class="user-avatar">
     <el-dropdown>
         <span class="el-dropdown-link">
-            {{ userStore.username }}
+            <span class="username">{{ userStore.username }}</span>
             <el-icon class="el-icon--right">
                 <arrow-down />
             </el-icon>
@@ -49,5 +49,21 @@ const logout = () => {
 <style lang="scss" scoped>
 button {
     background-color: transparent;
+    font-size: 18px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    margin: 0px 10px;
+}
+
+.username {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.el-icon--right {
+    font-size: 16px;
 }
 </style>

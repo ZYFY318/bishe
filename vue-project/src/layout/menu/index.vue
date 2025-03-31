@@ -57,4 +57,33 @@ export default {
     name: 'Menu'
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.el-menu {
+    .el-menu-item {
+        height: 60px;
+        line-height: 60px;
+        
+        .el-icon {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+    }
+
+    .el-sub-menu {
+        .el-sub-menu__title {
+            height: 60px;
+            line-height: 60px;
+
+            .el-icon {
+                font-size: 18px;
+                margin-right: 8px;
+            }
+        }
+    }
+}
+
+.sub-menu {
+    background-color: #1f2d3d;
+}
+
+</style>

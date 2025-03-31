@@ -17,12 +17,14 @@ declare module 'vue' {
     IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
+    ItemCard: typeof import('./src/components/ItemCard/index.vue')['default']
     LineCharts: typeof import('./src/components/echarts/lineCharts/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Svgicon: typeof import('./src/components/Svgicon/index.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     ThreeDScene: typeof import('./src/components/ThreeDScene.vue')['default']
+    ThreeModel: typeof import('./src/components/three/threeModel.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

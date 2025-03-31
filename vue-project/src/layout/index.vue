@@ -2,12 +2,14 @@
     <div class="layout_container">
         <!-- 左侧菜单 -->
         <div class="layout_slider" :class="{ fold: LayOutSettingStore.fold }">
-            <Logo></Logo>
+            <div class="logo-container">
+                <Logo></Logo>
+            </div>
             <!-- 展示菜单 -->
             <!-- 滚动组件 -->
             <el-scrollbar class="scrollbar">
                 <!-- 根据路由动态生成路由 -->
-                <el-menu :collapse="LayOutSettingStore.fold" :default-active="$route.path" background-color='#e64980'
+                <el-menu :collapse="LayOutSettingStore.fold" :default-active="$route.path" background-color='#22233b'
                     text-color="white" active-text-color="#fa5252">
                     <Menu :menuList='userStore.menuRoutes'></Menu>
                 </el-menu>
@@ -44,7 +46,7 @@ let $router = useRoute();
 const userStore = useUserStore();
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .layout_container {
     display: flex;
     position: absolute;
@@ -52,14 +54,16 @@ const userStore = useUserStore();
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: red;
+    // background-color: red;
 }
 
 .layout_slider {
-
-    width: $base-menu-width; // 左侧菜单宽度
-    background-color: $base-menu-background;
-    transition: all 0.3s;
+    justify-content: center; /* 水平居中 */
+    width: 18vw; // Set the width to 20% of the viewport width
+    background-color: #22233b;
+    border-radius: 10px; /* Adjust the value for desired roundness */
+    height: calc(100vh - 40px); /* Adjust the value for desired top and bottom spacing */
+    margin: 20px 0 20px 20px; /* Adjust the values for desired spacing */
 
     .scrollbar {
         width: 100%;
@@ -67,14 +71,17 @@ const userStore = useUserStore();
     }
 
     &.fold {
-        width: $base-menu-min-width;
+        width: 5vw; // Adjust the width when the menu is folded
     }
 }
 
 .layout_content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+    width: 100%; // Adjust width to account for menu width and left margin
+    height: calc(100vh - 20px); // Adjust height to fit the screen with some margin
+    margin: 20px 0 20px 0; // Align top with menu
+    padding: 0px; // Add padding if needed
+    // overflow: auto; // Ensure content is scrollable if it overflows
+    // background-color: aqua;
 }
 
 .layout_tabbar {
@@ -83,17 +90,16 @@ const userStore = useUserStore();
 
 .layout_main {
     flex: 1; // 占用剩余空间
-    background-color: greenyellow;
     padding: 20px;
-    overflow: auto;
+    // overflow: auto
     vertical-align: middle;
-    align-items: center;
     justify-content: center;
-    height: 100%;
 }
 
 .el-menu {
     border-right: none;
     /* 去除右侧边框 */
 }
+
+
 </style>

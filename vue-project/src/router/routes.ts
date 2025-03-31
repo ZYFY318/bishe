@@ -59,7 +59,7 @@ export const constantRoute = [
     name: "Screen",
     meta: {
       hidden: false,
-      title: "用户数据",
+      title: "个人中心",
       icon: "Platform",
     },
   },
@@ -72,18 +72,8 @@ export const constantRoute = [
       title: "权限管理",
       icon: "Lock",
     },
-    redirect: "/acl/user",
+    redirect: "/acl/role",
     children: [
-      {
-        path: "/acl/user",
-        component: () => import("@/views/acl/user/index.vue"),
-        name: "User",
-        meta: {
-          hidden: false,
-          title: "用户管理",
-          icon: "User",
-        },
-      },
       {
         path: "/acl/role",
         component: () => import("@/views/acl/role/index.vue"),
@@ -92,16 +82,6 @@ export const constantRoute = [
           hidden: false,
           title: "角色管理",
           icon: "UserFilled",
-        },
-      },
-      {
-        path: "/acl/permission",
-        component: () => import("@/views/acl/permission/index.vue"),
-        name: "Permission",
-        meta: {
-          hidden: false,
-          title: "菜单管理",
-          icon: "Monitor",
         },
       },
     ],
@@ -128,26 +108,6 @@ export const constantRoute = [
         },
       },
       {
-        path: "/product/attr",
-        component: () => import("@/views/product/attr/index.vue"),
-        name: "Attr",
-        meta: {
-          hidden: false,
-          title: "试题管理",
-          icon: "ChromeFilled",
-        },
-      },
-      {
-        path: "/product/spu",
-        component: () => import("@/views/product/spu/index.vue"),
-        name: "Spu",
-        meta: {
-          hidden: false,
-          title: "SPU管理",
-          icon: "Calendar",
-        },
-      },
-      {
         path: "/product/sku",
         component: () => import("@/views/product/sku/index.vue"),
         name: "Sku",
@@ -158,5 +118,15 @@ export const constantRoute = [
         },
       },
     ],
+  },
+  {
+    path: "/showModel",
+    component: () => import("@/views/showModel/index.vue"),
+    name: "ShowModel",
+    meta: {
+      hidden: false,
+      title: "模型展示",
+      icon: "Monitor",
+    },
   },
 ];

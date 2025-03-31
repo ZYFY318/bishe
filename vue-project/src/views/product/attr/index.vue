@@ -1,16 +1,17 @@
 <template>
-    <div class="test">
-        <h1>attr</h1>
-    </div>
+  <div>
+    <h2>hello</h2>
+  </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 
 </script>
 
-<style scoped lang="scss">
-.test {
-    margin: 0, auto;
-    justify-content: center
+<style scoped>
+.canvas-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 </style>

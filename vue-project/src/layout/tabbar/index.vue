@@ -18,17 +18,21 @@ import Setting from './setting/index.vue';
     height: 100%;
     display: flex;
     justify-content: space-between;
-    background-image: linear-gradient(to right, white, rgb(239, 216, 216), white);
+    // background-image: linear-gradient(to right, white, rgb(239, 216, 216), white);
 
-    .tabbar_left {
+    .tabbar_left,
+    .tabbar_right {
         display: flex;
         align-items: center;
+        width: 50%;
+    }
+
+    .tabbar_left {
         margin-left: 20px;
     }
 
     .tabbar_right {
-        display: flex;
-        align-items: center;
+        justify-content: flex-end;
     }
 }
 </style>
