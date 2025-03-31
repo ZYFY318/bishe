@@ -3,7 +3,7 @@
   </template>
   
   <script setup>
-  import { ref, onMounted, onUnmounted } from 'vue'
+  import { ref, onMounted, onUnmounted, watch } from 'vue'
   import * as THREE from 'three'
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
   import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -13,36 +13,66 @@
       type: String,
       required: true,
     },
+    modelName: {
+      type: String,
+      default: '未命名模型'
+    },
+    scale: {
+      type: Object,
+      default: () => ({ x: 1, y: 1, z: 1 })
+    },
+    autoRotate: {
+      type: Boolean,
+      default: false
+    }
   })
   
   const canvasContainer = ref(null)
   let scene, camera, renderer, controls
   
+  // 添加一个 ref 来存储模型引用
+  const modelRef = ref(null)
+  
+  // 监听 scale 变化
+  watch(() => props.scale, (newScale) => {
+    if (modelRef.value) {
+      modelRef.value.scale.set(
+        newScale.x * 2, // 乘以2是因为我们之前基础缩放是2
+        newScale.y * 2,
+        newScale.z * 2
+      )
+    }
+  }, { deep: true })
+  
+  // 监听 autoRotate 变化
+  watch(() => props.autoRotate, (newValue) => {
+    if (controls) {
+      controls.autoRotate = newValue;
+      controls.autoRotateSpeed = 8.0; // 可以调整旋转速度
+    }
+  }, { immediate: true })
+  
   onMounted(() => {
     // 创建场景
     scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x808080) // 设置背景色为灰色
+    scene.background = new THREE.Color(0xffffff) // 将背景色改为白色
   
-    // 创建相机
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.set(0, 1.6, 5)
+    // 获取父容器的尺寸
+    const container = canvasContainer.value
+    const containerWidth = container.clientWidth
+    const containerHeight = container.clientHeight
+    // 使用父容器的尺寸创建相机
+    camera = new THREE.PerspectiveCamera(75, containerWidth / containerHeight, 0.1, 1000)
+    camera.position.set(0, 0.6, 0.5)
   
-    // 创建渲染器并启用阴影
+    // 使用父容器的尺寸创建渲染器
     renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setSize(containerWidth, containerHeight)
     renderer.shadowMap.enabled = true // 启用阴影映射
-    canvasContainer.value.appendChild(renderer.domElement)
-  
-    // 创建白色地面
-    const groundGeometry = new THREE.PlaneGeometry(10, 10) // 创建一个 10x10 的平面
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff }) // 使用标准材质并设置为白色
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial)
-    ground.rotation.x = -Math.PI / 2 // 使地面水平
-    ground.receiveShadow = true // 启用地面接收阴影
-    scene.add(ground) // 将地面添加到场景中
+    container.appendChild(renderer.domElement)
   
     // 增强环境光
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5) // 增强环境光强度
+    const ambientLight = new THREE.AmbientLight(0xffffff, 3.5) // 增强环境光强度
     scene.add(ambientLight)
   
     // 增强点光源并启用阴影
@@ -53,67 +83,110 @@
   
     // 初始化 OrbitControls
     controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableDamping = true // 启用阻尼
-    controls.dampingFactor = 0.5 // 调整阻尼因子
-    controls.rotateSpeed = 0.4; // 调整旋转速度
-    controls.screenSpacePanning = false // 禁用平移
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+    controls.rotateSpeed = 0.4
+    controls.autoRotate = props.autoRotate
+    controls.autoRotateSpeed = 8.0
+    controls.enableZoom = true
+    controls.enablePan = false
+    controls.minDistance = 2
+    controls.maxDistance = 10
+    controls.minPolarAngle = Math.PI / 4
+    controls.maxPolarAngle = Math.PI / 1.5
   
+    // 创建渲染循环函数
+    function animate() {
+        requestAnimationFrame(animate);
+        if (controls) {
+            controls.update(); // 这会处理自动旋转
+        }
+        if (renderer && scene && camera) {
+            renderer.render(scene, camera);
+        }
+    }
+    
+    // 立即开始渲染循环
+    animate();
+  console.log("heew",props.modelPath)
     // 加载 GLB 模型
     const gltfLoader = new GLTFLoader()
     gltfLoader.load(
-      props.modelPath, // 使用传入的模型路径
-      (gltf) => {
-        console.log('模型加载成功:', gltf); // 打印加载的对象
-        const model = gltf.scene; // 保存加载的模型
-        scene.add(model); // 将加载的对象添加到场景中
-        model.position.set(0, 0, -1); // 将模型向相机前方移动
-        model.scale.set(1, 1, 1); // 尝试使用原始大小
-        model.castShadow = true; // 启用模型的阴影
-        console.log('模型已添加到场景中，位置:', model.position, '缩放:', model.scale); // 打印模型位置和缩放
-  
-        // 打印模型的边界框
-        const box = new THREE.Box3().setFromObject(model);
-        console.log('模型边界框:', box);
-  
-        // 创建边界框的可视化
-        const boxHelper = new THREE.Box3Helper(box, new THREE.Color(1, 0, 0)); // 红色边界框
-        scene.add(boxHelper); // 将边界框添加到场景中
-  
-        // 在渲染循环中更新模型的旋转
-        function animate() {
-          requestAnimationFrame(animate);
-          model.rotation.y += 0.01; // 使模型绕 Y 轴旋转
-          controls.update(); // 更新控制器
-          renderer.render(scene, camera);
+        props.modelPath,
+        (gltf) => {
+            console.log(`模型 "${props.modelName}" 加载成功`);
+            const model = gltf.scene;
+            
+            // 计算模型的包围盒
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            console.log(size)
+            // 设置模型位置，z轴位置为模型高度的一半
+            model.position.set(0, -size.y / 2, 0);
+            
+            // 设置初始缩放
+            model.scale.set(
+                props.scale.x * 2,
+                props.scale.y * 2,
+                props.scale.z * 2
+            );
+            
+            model.castShadow = true;
+            scene.add(model);
+            
+            // 保存模型引用
+            modelRef.value = model;
+
+            // 调整相机位置以适应模型
+            const center = box.getCenter(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            camera.position.set(
+                maxDim * 2,
+                maxDim * 2,
+                maxDim * 2
+            );
+            camera.lookAt(center);
+        },
+        (xhr) => {
+            console.log(`${props.modelName} 加载进度: ${(xhr.loaded / xhr.total * 100)}%`);
+        },
+        (error) => {
+            console.error(`模型 "${props.modelName}" 加载失败:`, error);
+            console.error('尝试加载的模型路径:', props.modelPath);
         }
-        animate();
-      },
-      (xhr) => {
-        console.log(`加载进度: ${(xhr.loaded / xhr.total) * 100}%`);
-      },
-      (error) => {
-        console.error('模型加载失败:', error);
-      }
     );
   
-    // 处理窗口大小调整
-    window.addEventListener('resize', onWindowResize, false)
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight
-      camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
-    }
-  })
+    // 修改 resize 处理函数，使用 ResizeObserver 监听父容器大小变化
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        camera.aspect = width / height
+        camera.updateProjectionMatrix()
+        renderer.setSize(width, height)
+      }
+    })
   
-  onUnmounted(() => {
-    window.removeEventListener('resize', onWindowResize)
+    // 观察父容器的大小变化
+    resizeObserver.observe(container)
+  
+    // 在组件卸载时停止观察
+    onUnmounted(() => {
+      resizeObserver.disconnect()
+      if (controls) {
+        controls.dispose();
+      }
+    })
+  
+    // 添加坐标轴辅助器
+    const axesHelper = new THREE.AxesHelper(5);
+    scene.add(axesHelper);
   })
   </script>
   
   <style scoped>
   .canvas-container {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
   }
   </style>

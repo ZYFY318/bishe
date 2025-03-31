@@ -39,14 +39,17 @@
   const navigateToShowModel = () => {
     router.push({
       path: '/showModel',
-      query: { modelPath: props.glbPath }
+      query: { 
+        modelPath: props.glbPath,
+        modelName: props.name   // 将模型名称作为查询参数传递
+       }
     });
   };
   </script>
   
   <style scoped lang="scss">
   .item-card {
-    width: 300px;
+    width: 320px;
     display: flex;
     align-items: center;
     padding: 20px;
@@ -68,7 +71,6 @@
     width: 100px;
     height: 100px;
     object-fit: cover;
-    margin-right: 20px;
   }
   
   .item-details {
@@ -81,7 +83,7 @@
   .item-name {
     font-size: 18px;
     font-weight: bold;
-    margin: 0 0 10px 0;
+    margin: 0 
   }
   
   .item-description {

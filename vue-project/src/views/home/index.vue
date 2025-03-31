@@ -4,19 +4,19 @@
         imageUrl="hakasei.png"
         name="Item Name"
         description="This is a brief description of the item."
-        glbPath="path/to/model1.glb"
+        glbPath="old_fire_axe.glb"
       />
       <ItemCard
         imageUrl="hakasei.png"
         name="Item Name 2"
         description="This is a brief description of the item."
-        glbPath="path/to/model2.glb"
+        glbPath="kitty_character.glb"
       />
       <ItemCard
         imageUrl="hakasei.png"
         name="Item Name 3"
         description="This is a brief description of the item."
-        glbPath="path/to/model3.glb"
+        glbPath="among_us_character.glb"
       />
       <ItemCard
         imageUrl="hakasei.png"

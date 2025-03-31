@@ -124,7 +124,7 @@ export const constantRoute = [
     component: () => import("@/views/showModel/index.vue"),
     name: "ShowModel",
     meta: {
-      hidden: false,
+      hidden: true,
       title: "模型展示",
       icon: "Monitor",
     },
