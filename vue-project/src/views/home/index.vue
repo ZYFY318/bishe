@@ -1,34 +1,52 @@
 <template>
     <div class="card-container">
+      <!-- 添加模型卡片放在最前面 -->
+      <AddModelCard @model-uploaded="refreshModelList" />
+      
+      <!-- 展示现有模型的卡片 -->
       <ItemCard
-        imageUrl="hakasei.png"
-        name="Item Name"
-        description="This is a brief description of the item."
-        glbPath="old_fire_axe.glb"
-      />
-      <ItemCard
-        imageUrl="hakasei.png"
-        name="Item Name 2"
-        description="This is a brief description of the item."
-        glbPath="kitty_character.glb"
-      />
-      <ItemCard
-        imageUrl="hakasei.png"
-        name="Item Name 3"
-        description="This is a brief description of the item."
-        glbPath="among_us_character.glb"
-      />
-      <ItemCard
-        imageUrl="hakasei.png"
-        name="Item Name 4"
-        description="This is a brief description of the item."
-        glbPath="path/to/model4.glb"
+        v-for="(item, index) in items"
+        :key="index"
+        :imageUrl="item.imageUrl"
+        :name="item.name"
+        :description="item.description"
+        :glbPath="item.glbPath"
       />
     </div>
   </template>
   
   <script setup lang="ts">
- 
+  import { ref, onMounted } from 'vue';
+  import type { ModelItem } from '@/api/model/type';
+  import { reqModelList } from '@/api/model';
+  
+  // 定义一个响应式变量来存储从后端获取的数据
+  const items = ref<ModelItem[]>([]);
+  
+  // 获取模型列表的函数
+  const fetchModelList = async () => {
+    try {
+      const response = await reqModelList();
+      console.log(response.data)
+      if (response.code === 200) {
+        items.value = response.data;
+      } else {
+        console.error('Failed to fetch items:', response);
+      }
+    } catch (error) {
+      console.error('Failed to fetch items:', error);
+    }
+  };
+  
+  // 刷新模型列表
+  const refreshModelList = () => {
+    fetchModelList();
+  };
+  
+  // 在组件挂载时请求数据
+  onMounted(() => {
+    fetchModelList();
+  });
   </script>
   
   <style scoped lang="scss">

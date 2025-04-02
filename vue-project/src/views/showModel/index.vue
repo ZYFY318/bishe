@@ -21,9 +21,9 @@ const modelHeight = ref(50);
 
 // 将三个维度组合成一个对象传递给子组件
 const modelScale = computed(() => ({
-  x: modelLength.value / 50, // 将 0-100 的值映射到 0-2 的比例
-  y: modelHeight.value / 50,
-  z: modelWidth.value / 50
+  x: modelLength.value / 100, // 直接传递原始值，缩放映射将在组件内处理
+  y: modelHeight.value / 100,
+  z: modelWidth.value / 100
 }));
 
 // 颜色选项
@@ -59,21 +59,21 @@ const autoRotate = ref(false);
         <el-card class="edit-card">
           <div class="edit-item">
             <span>模型长度</span>
-            <el-slider v-model="modelLength" :min="0" :max="100" />
+            <el-slider v-model="modelLength" :min="10" :max="200" />
           </div>
         </el-card>
 
         <el-card class="edit-card">
           <div class="edit-item">
             <span>模型宽度</span>
-            <el-slider v-model="modelWidth" :min="0" :max="100" />
+            <el-slider v-model="modelWidth" :min="10" :max="200" />
           </div>
         </el-card>
 
         <el-card class="edit-card">
           <div class="edit-item">
             <span>模型高度</span>
-            <el-slider v-model="modelHeight" :min="0" :max="100" />
+            <el-slider v-model="modelHeight" :min="10" :max="200" />
           </div>
         </el-card>
 

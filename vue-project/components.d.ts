@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
+    AddModelCard: typeof import('./src/components/AddModelCard/index.vue')['default']
     Barchats: typeof import('./src/components/echarts/barchats/index.vue')['default']
     Echarts: typeof import('./src/components/echarts/index.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
@@ -19,6 +20,7 @@ declare module 'vue' {
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     ItemCard: typeof import('./src/components/ItemCard/index.vue')['default']
     LineCharts: typeof import('./src/components/echarts/lineCharts/index.vue')['default']
+    ModelUploadDialog: typeof import('./src/components/ModelUploadDialog/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Svgicon: typeof import('./src/components/Svgicon/index.vue')['default']

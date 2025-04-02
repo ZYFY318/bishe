@@ -36,11 +36,12 @@
   // 监听 scale 变化
   watch(() => props.scale, (newScale) => {
     if (modelRef.value) {
-      modelRef.value.scale.set(
-        newScale.x * 2, // 乘以2是因为我们之前基础缩放是2
-        newScale.y * 2,
-        newScale.z * 2
-      )
+      // 移除这段代码，因为我们已经在模型加载时设置了缩放因子
+      // modelRef.value.scale.set(
+      //   newScale.x * 3, 
+      //   newScale.y * 3,
+      //   newScale.z * 3
+      // )
     }
   }, { deep: true })
   
@@ -120,32 +121,88 @@
             // 计算模型的包围盒
             const box = new THREE.Box3().setFromObject(model);
             const size = box.getSize(new THREE.Vector3());
-            console.log(size)
-            // 设置模型位置，z轴位置为模型高度的一半
-            model.position.set(0, -size.y / 2, 0);
+            const center = box.getCenter(new THREE.Vector3());
             
-            // 设置初始缩放
+            console.log('模型原始尺寸:', size);
+            
+            // 自动标准化模型大小
+            // 计算当前模型的最大尺寸
+            const maxDimension = Math.max(size.x, size.y, size.z);
+            
+            // 定义目标标准尺寸（将模型缩放到这个基准大小）
+            const targetSize = 2; 
+            
+            // 计算缩放比例
+            const scaleFactor = targetSize / maxDimension;
+            
+            // 创建一个函数来计算映射后的缩放值
+            const mapScale = (value) => {
+              // 将滑块值 (10-200) 映射到合理的缩放范围 (0.2-4.0)
+              return 0.2 + (value - 10) * (3.8 / 190);
+            };
+            
+            // 应用缩放
             model.scale.set(
-                props.scale.x * 2,
-                props.scale.y * 2,
-                props.scale.z * 2
+              scaleFactor * mapScale(props.scale.x * 100), 
+              scaleFactor * mapScale(props.scale.y * 100), 
+              scaleFactor * mapScale(props.scale.z * 100)
             );
+            
+            // 重置模型位置到中心
+            model.position.set(0, 0, 0);
+            
+            // 由于我们已经缩放了模型，需要重新计算包围盒
+            box.setFromObject(model);
+            const newSize = box.getSize(new THREE.Vector3());
+            const newCenter = box.getCenter(new THREE.Vector3());
+            
+            console.log('标准化后的模型尺寸:', newSize);
+            
+            // 调整模型位置，使底部对齐
+            model.position.y = -newSize.y / 2;
             
             model.castShadow = true;
             scene.add(model);
             
+            // 添加边框辅助器
+            const boxHelper = new THREE.BoxHelper(model, 0x0066ff); // 改为蓝色边框更醒目
+            // scene.add(boxHelper);
+            
+            // 在 watch 函数中也使用相同的映射方法
+            watch(() => props.scale, (newScale) => {
+              if (modelRef.value) {
+                modelRef.value.scale.set(
+                  scaleFactor * mapScale(newScale.x * 100),
+                  scaleFactor * mapScale(newScale.y * 100),
+                  scaleFactor * mapScale(newScale.z * 100)
+                );
+                // 如果有边框辅助器，更新它
+                if (boxHelper) {
+                  boxHelper.update();
+                }
+              }
+            }, { deep: true });
+            
             // 保存模型引用
             modelRef.value = model;
 
-            // 调整相机位置以适应模型
-            const center = box.getCenter(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
+            // 设置相机位置
+            // 计算合适的相机距离
+            const cameraDistance = Math.max(newSize.x, newSize.y, newSize.z) * 2.5;
+            
+            // 设置相机位置
             camera.position.set(
-                maxDim * 2,
-                maxDim * 2,
-                maxDim * 2
+                cameraDistance, 
+                cameraDistance * 0.8, 
+                cameraDistance
             );
-            camera.lookAt(center);
+            
+            // 让相机看向模型中心，但略微上移，以便更好地观察模型
+            camera.lookAt(0, newSize.y * 0.25, 0);
+            
+            // 更新控制器目标点
+            controls.target.set(0, newSize.y * 0.25, 0);
+            controls.update();
         },
         (xhr) => {
             console.log(`${props.modelName} 加载进度: ${(xhr.loaded / xhr.total * 100)}%`);
@@ -179,7 +236,7 @@
   
     // 添加坐标轴辅助器
     const axesHelper = new THREE.AxesHelper(5);
-    scene.add(axesHelper);
+    // scene.add(axesHelper);
   })
   </script>
   
