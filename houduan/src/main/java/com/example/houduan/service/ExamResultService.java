@@ -1,12 +1,12 @@
 package com.example.houduan.service;
 
-
 import com.example.houduan.pojo.ExamResult;
 import com.example.houduan.pojo.User;
 import com.example.houduan.pojo.dto.ExamResultDto;
 import com.example.houduan.pojo.dto.ExamResultResponseDto;
 import com.example.houduan.repository.ExamResultRepository;
 import com.example.houduan.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,11 +35,8 @@ public class ExamResultService {
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
 
         ExamResult examResult = new ExamResult();
+        BeanUtils.copyProperties(examResultDTO, examResult);
         examResult.setUser(user);
-        examResult.setExamDate(examResultDTO.getExamDate());
-        examResult.setScore(examResultDTO.getScore());
-        examResult.setDuration(examResultDTO.getDuration());
-        examResult.setExamType(examResultDTO.getExamType());
 
         ExamResult savedResult = examResultRepository.save(examResult);
         return convertToResponseDTO(savedResult);
@@ -48,11 +45,7 @@ public class ExamResultService {
     // 实体转响应DTO的转换方法
     private ExamResultResponseDto convertToResponseDTO(ExamResult examResult) {
         ExamResultResponseDto dto = new ExamResultResponseDto();
-        dto.setId(examResult.getId());
-        dto.setExamDate(examResult.getExamDate());
-        dto.setScore(examResult.getScore());
-        dto.setDuration(examResult.getDuration());
-        dto.setExamType(examResult.getExamType());
+        BeanUtils.copyProperties(examResult, dto);
         return dto;
     }
 }

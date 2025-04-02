@@ -21,6 +21,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/user/info").permitAll()  // ✅ 要求认证
                         .requestMatchers("/question,","/question/**").permitAll()
                                 .requestMatchers("/exam-results,","/exam-results/**").permitAll()
+                                .requestMatchers("/model,", "/model/**").permitAll()
                         .anyRequest().authenticated() // 其他接口需认证
                 );
         return http.build();
