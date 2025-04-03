@@ -1,8 +1,26 @@
 <template>
-    <div ref="canvasContainer" class="canvas-container"></div>
+    <div class="canvas-container">
+        <!-- 添加加载进度条 -->
+        <div v-if="loading" class="loading-container">
+            <el-progress 
+                type="circle"
+                :percentage="loadingProgress"
+                :stroke-width="6"
+                :width="120"
+                :show-text="true"
+                :status="loadingProgress === 100 ? 'success' : ''"
+            >
+                <template #default>
+                    <span class="progress-text">{{ loadingProgress === 100 ? '加载完成' : '加载中...' }}</span>
+                </template>
+            </el-progress>
+        </div>
+        <!-- 模型容器 -->
+        <div v-show="!loading" ref="canvasContainer" class="model-view"></div>
+    </div>
   </template>
   
-  <script setup>
+  <script setup lang="ts">
   import { ref, onMounted, onUnmounted, watch } from 'vue'
   import * as THREE from 'three'
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
@@ -33,6 +51,10 @@
   
   // 添加一个 ref 来存储模型引用
   const modelRef = ref(null)
+
+  // 添加加载状态和进度
+  const loading = ref(true);
+  const loadingProgress = ref(0);
 
   // 监听 scale 变化
   watch(() => props.scale, (newScale) => {
@@ -67,13 +89,14 @@
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
+      loading.value = true;
+      loadingProgress.value = 0;
+       // 创建 Blob
+       const modelBlob = new Blob([bytes], { type: 'model/gltf-binary' });
+
+      loadingProgress.value = 20; // 文件获取完成，设置进度为20%
       
-      // 创建 Blob
-      const modelBlob = new Blob([bytes], { type: 'model/gltf-binary' });
-      
-      // 创建 URL 并加载模型
       const modelUrl = URL.createObjectURL(modelBlob);
-      
       const gltfLoader = new GLTFLoader();
       gltfLoader.load(
         modelUrl,
@@ -99,7 +122,7 @@
           
           // 添加边框辅助器
           const boxHelper = new THREE.BoxHelper(model, 0x000000);
-          scene.add(boxHelper);
+          // scene.add(boxHelper);
           
           // 在模型缩放时更新边框
           watch(() => props.scale, () => {
@@ -119,19 +142,26 @@
           );
           camera.lookAt(center);
           
-          // 清理 URL
-          URL.revokeObjectURL(modelUrl);
+          // 在模型加载完成后，设置进度为100%并隐藏进度条
+          loadingProgress.value = 100;
+          setTimeout(() => {
+            loading.value = false;
+          }, 500);
         },
         (progress) => {
-          console.log(`加载进度: ${(progress.loaded / progress.total * 100)}%`);
+          // 计算加载进度（20%-90%）
+          const progressPercentage = (progress.loaded / progress.total) * 70;
+          loadingProgress.value = 20 + progressPercentage;
         },
         (error) => {
           console.error('模型加载失败:', error);
           URL.revokeObjectURL(modelUrl);
+          loading.value = false;
         }
       );
     } catch (error) {
       console.error('获取模型数据失败:', error);
+      loading.value = false;
     }
   };
 
@@ -141,23 +171,24 @@
   });
   
   onMounted(() => {
+    // 获取模型容器
+    const container = canvasContainer.value;
     // 创建场景
-    scene = new THREE.Scene()
-    scene.background = new THREE.Color(0xffffff) // 将背景色改为白色
-  
-    // 获取父容器的尺寸
-    const container = canvasContainer.value
-    const containerWidth = container.clientWidth
-    const containerHeight = container.clientHeight
-    // 使用父容器的尺寸创建相机
-    camera = new THREE.PerspectiveCamera(75, containerWidth / containerHeight, 0.1, 1000)
-    camera.position.set(0, 0.6, 0.5)
-  
-    // 使用父容器的尺寸创建渲染器
-    renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setSize(containerWidth, containerHeight)
-    renderer.shadowMap.enabled = true // 启用阴影映射
-    container.appendChild(renderer.domElement)
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+
+    // 获取容器的尺寸
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
+    // 使用容器的尺寸创建相机和渲染器
+    camera = new THREE.PerspectiveCamera(75, containerWidth / containerHeight, 0.1, 1000);
+    camera.position.set(0, 0.6, 0.5);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(containerWidth, containerHeight);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
   
     // 增强环境光
     const ambientLight = new THREE.AmbientLight(0xffffff, 3.5) // 增强环境光强度
@@ -232,5 +263,28 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: relative;
+  }
+
+  .model-view {
+    width: 100%;
+    height: 100%;
+  }
+
+  .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    /* background: rgba(255, 255, 255, 0.9); */
+    padding: 20px;
+    /* border-radius: 8px; */
+    /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
+  }
+
+  .progress-text {
+    font-size: 14px;
+    color: #606266;
   }
   </style>
