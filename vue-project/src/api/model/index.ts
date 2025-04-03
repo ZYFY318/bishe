@@ -5,7 +5,7 @@ import type { ModelListResponse, ModelQueryParams, ModelResponse, ModelUploadDat
 // API 枚举
 enum API {
   GET_MODEL_LIST = "/model",
-  GET_MODEL_DETAIL = "/model/detail",
+  GET_MODEL_DATA = "/model",  // /{id}/data 获取模型二进制数据
   UPLOAD_MODEL = "/model/upload"
 }
 
@@ -14,8 +14,12 @@ export const reqModelList = (params?: ModelQueryParams) =>
   request.get<any, ModelListResponse>(API.GET_MODEL_LIST, { params });
 
 // 获取单个模型详情
-export const reqModelDetail = (id: string) =>
-  request.get<any, ModelResponse>(`${API.GET_MODEL_DETAIL}/${id}`);
+export const reqModelDetail = (id: number) =>
+  request.get<any, ModelResponse>(`${API.GET_MODEL_DATA}/${id}`);
+
+// 获取模型二进制数据
+export const reqModelData = (id: number) =>
+  request.get<any, Blob>(`${API.GET_MODEL_DATA}/${id}`);
 
 // 上传模型
 export const uploadModel = (data: ModelUploadData) => {

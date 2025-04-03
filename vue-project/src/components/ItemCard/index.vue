@@ -1,98 +1,94 @@
 <template>
-    <el-card class="item-card" @click="navigateToShowModel">
-      <div class="card-content">
-        <img :src="imageUrl" alt="Item Image" class="item-image" />
-        <div class="item-details">
-          <h3 class="item-name">{{ name }}</h3>
-          <p class="item-description">{{ description }}</p>
-        </div>
+  <div class="item-card" @click="handleClick">
+    <div class="card-content">
+      <img :src="modelImage" alt="Model preview" class="model-preview" />
+      <div class="model-info">
+        <h3>{{ props.modelItem.name }}</h3>
+        <p>{{ props.modelItem.description }}</p>
+        <p class="created-time">创建时间: {{ new Date(props.modelItem.created_at).toLocaleString() }}</p>
       </div>
-    </el-card>
-  </template>
-  
-  <script setup lang="ts">
-  import { defineProps } from 'vue';
-  import { useRouter } from 'vue-router';
-  
-  const router = useRouter();
-  
-  // 定义组件的 props
-  const props = defineProps({
-    imageUrl: {
-      type: String,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    glbPath: {
-      type: String,
-      required: true
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { defineProps, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import type { PropType } from 'vue';
+import type { ModelItem } from '@/api/model/type';
+
+const router = useRouter();
+
+// 定义组件的 props
+const props = defineProps({
+  modelItem: {
+    type: Object as PropType<ModelItem>,
+    required: true
+  }
+});
+
+// 计算属性：如果没有 imageUrl 则使用默认图片
+const modelImage = computed(() => {
+  return props.modelItem.imageUrl || '/hakasei.png';
+});
+
+const handleClick = () => {
+  router.push({
+    path: '/showModel',
+    query: {
+      modelId: props.modelItem.id,
+      modelName: props.modelItem.name
     }
   });
+};
+</script>
+
+<style scoped lang="scss">
+.item-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   
-  const navigateToShowModel = () => {
-    router.push({
-      path: '/showModel',
-      query: { 
-        modelPath: props.glbPath,
-        modelName: props.name   // 将模型名称作为查询参数传递
-       }
-    });
-  };
-  </script>
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.model-info {
+  h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: #333;
+  }
   
-  <style scoped lang="scss">
-  .item-card {
-    width: 320px;
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  
-    &:hover {
-      transform: scale(1.02);
+  p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    
+    &.created-time {
+      margin-top: 8px;
+      color: #999;
+      font-size: 12px;
     }
   }
-  
-  .card-content {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .item-image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-  }
-  
-  .item-details {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    
-  }
-  
-  .item-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 0 
-  }
-  
-  .item-description {
-    font-size: 14px;
-    color: #666;
-    white-space: normal;
-    word-wrap: break-word;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: left;
-  }
-  </style>
+}
+
+.model-preview {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+</style>

@@ -1,9 +1,10 @@
 // 模型项的接口
 export interface ModelItem {
-  imageUrl: string;
+  id: number;
   name: string;
   description: string;
-  glbPath: string;
+  created_at: string;
+  imageUrl?: string;
 }
 
 // 模型列表的响应数据接口
@@ -30,13 +31,11 @@ export interface ModelUploadData {
   name: string;
   description: string;
   file: File;
+  image?: File;
 }
 
 // 模型上传响应
 export interface ModelUploadResponse {
   code: number;
-  data: {
-    message: string;
-    modelPath: string;
-  }
+  data: ModelItem;
 } 

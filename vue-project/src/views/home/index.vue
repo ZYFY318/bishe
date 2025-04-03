@@ -5,12 +5,9 @@
       
       <!-- 展示现有模型的卡片 -->
       <ItemCard
-        v-for="(item, index) in items"
-        :key="index"
-        :imageUrl="item.imageUrl"
-        :name="item.name"
-        :description="item.description"
-        :glbPath="item.glbPath"
+        v-for="item in items"
+        :key="item.id"
+        :model-item="item"
       />
     </div>
   </template>
@@ -27,7 +24,7 @@
   const fetchModelList = async () => {
     try {
       const response = await reqModelList();
-      console.log(response.data)
+      console.log("here",response.data)
       if (response.code === 200) {
         items.value = response.data;
       } else {

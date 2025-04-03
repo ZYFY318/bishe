@@ -7,11 +7,12 @@
   import * as THREE from 'three'
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
   import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+  import { reqModelData } from '@/api/model'
   
   const props = defineProps({
-    modelPath: {
-      type: String,
-      required: true,
+    modelId: {
+      type: Number,
+      required: true
     },
     modelName: {
       type: String,
@@ -32,16 +33,16 @@
   
   // 添加一个 ref 来存储模型引用
   const modelRef = ref(null)
-  
+
   // 监听 scale 变化
   watch(() => props.scale, (newScale) => {
     if (modelRef.value) {
       // 移除这段代码，因为我们已经在模型加载时设置了缩放因子
-      // modelRef.value.scale.set(
-      //   newScale.x * 3, 
-      //   newScale.y * 3,
-      //   newScale.z * 3
-      // )
+      modelRef.value.scale.set(
+        newScale.x * 1, 
+        newScale.y * 1,
+        newScale.z * 1
+      )
     }
   }, { deep: true })
   
@@ -52,6 +53,92 @@
       controls.autoRotateSpeed = 8.0; // 可以调整旋转速度
     }
   }, { immediate: true })
+  
+  // 添加加载模型的函数
+  const loadModel = async () => {
+    try {
+      const response = await reqModelData(props.modelId);
+      // 从响应中获取 Base64 编码的 glbData
+      const base64Data = response.data.glbData;
+
+      // 将 Base64 转换为二进制数组
+      const binaryString = atob(base64Data);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      
+      // 创建 Blob
+      const modelBlob = new Blob([bytes], { type: 'model/gltf-binary' });
+      
+      // 创建 URL 并加载模型
+      const modelUrl = URL.createObjectURL(modelBlob);
+      
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.load(
+        modelUrl,
+        (gltf) => {
+          const model = gltf.scene;
+          
+          // 计算模型的包围盒
+          const box = new THREE.Box3().setFromObject(model);
+          const size = box.getSize(new THREE.Vector3());
+          
+          // 设置模型位置
+          model.position.set(0, 0, size.y / 2);
+          
+          // 设置初始缩放
+          model.scale.set(
+            props.scale.x * 2,
+            props.scale.y * 2,
+            props.scale.z * 2
+          );
+          
+          model.castShadow = true;
+          scene.add(model);
+          
+          // 添加边框辅助器
+          const boxHelper = new THREE.BoxHelper(model, 0x000000);
+          scene.add(boxHelper);
+          
+          // 在模型缩放时更新边框
+          watch(() => props.scale, () => {
+            boxHelper.update();
+          }, { deep: true });
+          
+          // 保存模型引用
+          modelRef.value = model;
+
+          // 调整相机位置以适应模型
+          const center = box.getCenter(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          camera.position.set(
+            maxDim * 2,
+            maxDim * 2,
+            maxDim * 2
+          );
+          camera.lookAt(center);
+          
+          // 清理 URL
+          URL.revokeObjectURL(modelUrl);
+        },
+        (progress) => {
+          console.log(`加载进度: ${(progress.loaded / progress.total * 100)}%`);
+        },
+        (error) => {
+          console.error('模型加载失败:', error);
+          URL.revokeObjectURL(modelUrl);
+        }
+      );
+    } catch (error) {
+      console.error('获取模型数据失败:', error);
+    }
+  };
+
+  // 监听 modelId 变化重新加载模型
+  watch(() => props.modelId, () => {
+    loadModel();
+  });
   
   onMounted(() => {
     // 创建场景
@@ -109,109 +196,9 @@
     
     // 立即开始渲染循环
     animate();
-  console.log("heew",props.modelPath)
-    // 加载 GLB 模型
-    const gltfLoader = new GLTFLoader()
-    gltfLoader.load(
-        props.modelPath,
-        (gltf) => {
-            console.log(`模型 "${props.modelName}" 加载成功`);
-            const model = gltf.scene;
-            
-            // 计算模型的包围盒
-            const box = new THREE.Box3().setFromObject(model);
-            const size = box.getSize(new THREE.Vector3());
-            const center = box.getCenter(new THREE.Vector3());
-            
-            console.log('模型原始尺寸:', size);
-            
-            // 自动标准化模型大小
-            // 计算当前模型的最大尺寸
-            const maxDimension = Math.max(size.x, size.y, size.z);
-            
-            // 定义目标标准尺寸（将模型缩放到这个基准大小）
-            const targetSize = 2; 
-            
-            // 计算缩放比例
-            const scaleFactor = targetSize / maxDimension;
-            
-            // 创建一个函数来计算映射后的缩放值
-            const mapScale = (value) => {
-              // 将滑块值 (10-200) 映射到合理的缩放范围 (0.2-4.0)
-              return 0.2 + (value - 10) * (3.8 / 190);
-            };
-            
-            // 应用缩放
-            model.scale.set(
-              scaleFactor * mapScale(props.scale.x * 100), 
-              scaleFactor * mapScale(props.scale.y * 100), 
-              scaleFactor * mapScale(props.scale.z * 100)
-            );
-            
-            // 重置模型位置到中心
-            model.position.set(0, 0, 0);
-            
-            // 由于我们已经缩放了模型，需要重新计算包围盒
-            box.setFromObject(model);
-            const newSize = box.getSize(new THREE.Vector3());
-            const newCenter = box.getCenter(new THREE.Vector3());
-            
-            console.log('标准化后的模型尺寸:', newSize);
-            
-            // 调整模型位置，使底部对齐
-            model.position.y = -newSize.y / 2;
-            
-            model.castShadow = true;
-            scene.add(model);
-            
-            // 添加边框辅助器
-            const boxHelper = new THREE.BoxHelper(model, 0x0066ff); // 改为蓝色边框更醒目
-            // scene.add(boxHelper);
-            
-            // 在 watch 函数中也使用相同的映射方法
-            watch(() => props.scale, (newScale) => {
-              if (modelRef.value) {
-                modelRef.value.scale.set(
-                  scaleFactor * mapScale(newScale.x * 100),
-                  scaleFactor * mapScale(newScale.y * 100),
-                  scaleFactor * mapScale(newScale.z * 100)
-                );
-                // 如果有边框辅助器，更新它
-                if (boxHelper) {
-                  boxHelper.update();
-                }
-              }
-            }, { deep: true });
-            
-            // 保存模型引用
-            modelRef.value = model;
 
-            // 设置相机位置
-            // 计算合适的相机距离
-            const cameraDistance = Math.max(newSize.x, newSize.y, newSize.z) * 2.5;
-            
-            // 设置相机位置
-            camera.position.set(
-                cameraDistance, 
-                cameraDistance * 0.8, 
-                cameraDistance
-            );
-            
-            // 让相机看向模型中心，但略微上移，以便更好地观察模型
-            camera.lookAt(0, newSize.y * 0.25, 0);
-            
-            // 更新控制器目标点
-            controls.target.set(0, newSize.y * 0.25, 0);
-            controls.update();
-        },
-        (xhr) => {
-            console.log(`${props.modelName} 加载进度: ${(xhr.loaded / xhr.total * 100)}%`);
-        },
-        (error) => {
-            console.error(`模型 "${props.modelName}" 加载失败:`, error);
-            console.error('尝试加载的模型路径:', props.modelPath);
-        }
-    );
+    // 在组件挂载时加载模型
+    loadModel();
   
     // 修改 resize 处理函数，使用 ResizeObserver 监听父容器大小变化
     const resizeObserver = new ResizeObserver(entries => {
