@@ -13,10 +13,10 @@ public interface IModelService {
     Model getModelById(Integer id);
     
     // Add a new model
-    Model addModel(ModelDto modelDto);
+    Model addModel(ModelDto modelDto, byte[] glbData);
     
     // Update a model
-    Model updateModel(ModelDto modelDto);
+    Model updateModel(ModelDto modelDto, byte[] glbData);
     
     // Delete a model
     void deleteModel(Integer id);

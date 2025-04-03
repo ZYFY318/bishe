@@ -1,6 +1,7 @@
 package com.example.houduan.pojo.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 public class ModelDto {
     private Integer id;
@@ -10,17 +11,22 @@ public class ModelDto {
     
     private String imageUrl;
     private String description;
-    private String glbPath;
+    private String fileName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public ModelDto(Integer id, String name, String imageUrl, String description, String glbPath) {
+    public ModelDto() {
+    }
+
+    public ModelDto(Integer id, String name, String imageUrl, String description, 
+                   String fileName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
         this.description = description;
-        this.glbPath = glbPath;
-    }
-
-    public ModelDto() {
+        this.fileName = fileName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -55,12 +61,28 @@ public class ModelDto {
         this.description = description;
     }
 
-    public String getGlbPath() {
-        return glbPath;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setGlbPath(String glbPath) {
-        this.glbPath = glbPath;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
@@ -70,7 +92,9 @@ public class ModelDto {
                 ", name='" + name + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", description='" + description + '\'' +
-                ", glbPath='" + glbPath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 } 

@@ -27,18 +27,19 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public Model addModel(ModelDto modelDto) {
+    public Model addModel(ModelDto modelDto, byte[] glbData) {
         Model model = new Model();
         model.setName(modelDto.getName());
         model.setImageUrl(modelDto.getImageUrl());
         model.setDescription(modelDto.getDescription());
-        model.setGlbPath(modelDto.getGlbPath());
+        model.setFileName(modelDto.getFileName());
+        model.setGlbData(glbData);
         
         return modelRepository.save(model);
     }
 
     @Override
-    public Model updateModel(ModelDto modelDto) {
+    public Model updateModel(ModelDto modelDto, byte[] glbData) {
         // Check if model exists
         Model existingModel = getModelById(modelDto.getId());
         
@@ -46,7 +47,12 @@ public class ModelService implements IModelService {
         existingModel.setName(modelDto.getName());
         existingModel.setImageUrl(modelDto.getImageUrl());
         existingModel.setDescription(modelDto.getDescription());
-        existingModel.setGlbPath(modelDto.getGlbPath());
+        
+        // Update file data only if new file is provided
+        if (glbData != null) {
+            existingModel.setFileName(modelDto.getFileName());
+            existingModel.setGlbData(glbData);
+        }
         
         return modelRepository.save(existingModel);
     }
