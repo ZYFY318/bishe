@@ -127,6 +127,15 @@ export const constantRoute = [
         },
       },
       {
+        path: "/product/examview/edit",
+        component: () => import("@/views/product/examview/edit.vue"),
+        name: "ExamEdit",
+        meta: {
+          hidden: true,
+          title: "编辑试卷",
+        },
+      },
+      {
         path: "/product/sku",
         component: () => import("@/views/product/sku/index.vue"),
         name: "Sku",

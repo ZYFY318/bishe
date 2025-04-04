@@ -36,4 +36,34 @@ export interface ExamCreateResponse {
     exam?: ExamItem;
   };
   message?: string;
+}
+
+// 试卷更新请求参数
+export interface ExamUpdateData {
+  title: string;
+  duration: number;
+  cover?: File;
+}
+
+// 题目项接口
+export interface QuestionItem {
+  id: number;
+  title: string;
+  options: string[];
+  answer: string;
+}
+
+// 试卷中题目的响应数据接口
+export interface ExamQuestionsResponse {
+  code: number;
+  data: {
+    questions: QuestionItem[];
+    total: number;
+  };
+  message?: string;
+}
+
+// 添加题目到试卷的请求参数
+export interface AddQuestionsToExamRequest {
+  questionIds: number[];
 } 

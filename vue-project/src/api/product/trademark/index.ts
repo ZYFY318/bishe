@@ -7,6 +7,7 @@ enum API {
   UPDATE_QUESTION_URL = "/question",
   DELETE_QUESTION_URL = "/question",
   GET_RANDOM_URL = "/question/random/",
+  SEARCH_QUESTION_URL = "/question/search/",
 }
 
 export const reqAllQuestion = () => request.get(API.GET_QUESTION_URL);
@@ -16,6 +17,11 @@ export const reqRandomQuestion = (num: number) =>
 
 export const reqQuestion = (page: number, limit: number) =>
   request.get<any, any>(API.GET_QUESTION_URL + `${page}/${limit}`);
+
+export const searchQuestion = (page: number, limit: number, keyword?: string) =>
+  request.get<any, any>(API.SEARCH_QUESTION_URL + `${page}/${limit}`, {
+    params: { keyword }
+  });
 
 export const addQuestion = (questionData: Question) =>
   request.post(API.ADD_QUESTION_URL, questionData);

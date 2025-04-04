@@ -68,7 +68,6 @@ const login = async () => {
         await useStore.userLogin(loginForm);
         const redirect: any = $route.query.redirect;
         $router.push({ path: redirect || '/' })
-        await useStore.userInfo();
         //登陆成功提示信息
         ElNotification({
             type: 'success',
