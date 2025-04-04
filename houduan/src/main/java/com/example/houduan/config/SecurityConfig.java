@@ -20,8 +20,10 @@ public class SecurityConfig {
                         .requestMatchers("/user","/user/**").permitAll() // 放行登录接口
 //                        .requestMatchers("/user/info").permitAll()  // ✅ 要求认证
                         .requestMatchers("/question,","/question/**").permitAll()
-                                .requestMatchers("/exam-results,","/exam-results/**").permitAll()
-                                .requestMatchers("/model,", "/model/**").permitAll()
+                        .requestMatchers("/exam-results,","/exam-results/**").permitAll()
+                        .requestMatchers("/model,", "/model/**").permitAll()
+                        .requestMatchers("/exams,", "/exams/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll() // 允许访问上传的文件
                         .anyRequest().authenticated() // 其他接口需认证
                 );
         return http.build();

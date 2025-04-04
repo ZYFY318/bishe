@@ -13,11 +13,15 @@ public class ResponseMessage<T> {
 
     // 成功的响应方法
     public static <T> ResponseMessage<T> success(T data) {
-        return new ResponseMessage<>(HttpStatus.OK.value(), "success!", null, data);
+        return new ResponseMessage<>(HttpStatus.OK.value(), "success", null, data);
+    }
+
+    public static <T> ResponseMessage<T> success(T data, String message) {
+        return new ResponseMessage<>(HttpStatus.OK.value(), message, null, data);
     }
 
     public static <T> ResponseMessage<T> success() {
-        return new ResponseMessage<>(HttpStatus.OK.value(), "success!", null, null);
+        return new ResponseMessage<>(HttpStatus.OK.value(), "success", null, null);
     }
 
     // 错误的响应方法

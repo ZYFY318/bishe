@@ -8,22 +8,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_model")
+@Table(name = "tb_exam")
 @Data
-public class Model {
+public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    private String name;
-    private String imageUrl;
-    private String description;
+    private String title;
     
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] glbData;  // 存储GLB文件的二进制数据
+    @Column(name = "cover_url")
+    private String coverUrl;
     
-    private String fileName;  // 存储原始文件名
+    private Integer duration;
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -32,5 +29,4 @@ public class Model {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
 } 
