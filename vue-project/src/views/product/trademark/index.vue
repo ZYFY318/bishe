@@ -126,6 +126,13 @@ const {
   submit: saveEdit
 } = useEditQuestion(getQuestion);
 
+// 修复TypeScript类型错误
+interface Question {
+  id: number;
+  title: string;
+  options: string[];
+  answer: string;
+}
 
 const handleDeleteQuestion = async (id: number) => {
   try {
@@ -141,14 +148,11 @@ const handleDeleteQuestion = async (id: number) => {
     console.log(questionArr.value);
     await deleteQuestion(id);
 
-    // const index = questionArr.value.findIndex(q => q.id === id);
-    // if (index !== -1) {
-    //   questionArr.value.splice(index, 1); // 触发响应式更新
-    // }
     getQuestion();
-    questionArr.value = questionArr.value.filter(q => q.id !== id);
+    questionArr.value = questionArr.value.filter((q: Question) => q.id !== id);
     console.log("after", questionArr.value.length);
     console.log(questionArr.value);
+    
     // 成功后刷新数据
     ElMessage.success("删除成功");
 
@@ -173,31 +177,142 @@ onMounted(() => {
 <style scoped lang="scss">
 .question-card {
   width: 90%; /* 固定宽度 */
-  // height: 600px; /* 固定高度 */
   margin: 10px auto;
   padding: 20px;
-  overflow: hidden; /* 隐藏溢出内容 */
-}
-
-.table-container {
-  height: calc(100% - 60px); /* 减去按钮和分页器的高度 */
-  overflow: auto; /* 显示滚动条以处理溢出内容 */
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px); /* 调整为视口高度减去一定的空间 */
+  background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px ;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .button-container {
   display: flex;
   justify-content: flex-start;
   margin-bottom: 10px;
+  flex-shrink: 0; /* 防止按钮区域压缩 */
+}
+
+.table-container {
+  flex: 1; /* 使表格容器占据剩余空间 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 防止整体溢出 */
+  margin-bottom: 15px;
+  min-height: 200px; /* 确保表格区域有最小高度 */
+  max-height: calc(100vh - 240px); /* 留出足够空间给分页器 */
+  
 }
 
 .el-table {
   width: 100%;
+  flex: 1; /* 表格占满容器 */
+  overflow: auto; /* 内容溢出时显示滚动条 */
 }
 
-.el-table-column {
-  /* 可以根据需要调整每列的宽度 */
-  //  width: 25%; 
+:deep(.el-table__body-wrapper) {
+  overflow-y: auto !important; /* 强制显示垂直滚动条 */
+  max-height: calc(100vh - 350px); /* 减小最大高度，为分页器留出空间 */
 }
+
+.el-pagination {
+  margin-top: 15px;
+  padding: 10px 0;
+  flex-shrink: 0; /* 防止分页器被压缩 */
+  position: relative; /* 确保分页器位于正确的层叠顺序 */
+  z-index: 10; /* 提高层叠顺序，防止被其他元素遮挡 */
+  background-color: transparent !important;
+}
+
+/* 分页器按钮和输入框样式 */
+:deep(.el-pagination button), 
+:deep(.el-pagination .el-input__inner),
+:deep(.el-pagination .el-select .el-input .el-input__inner) {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #333 !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* 分页器按钮悬停效果 */
+:deep(.el-pagination button:hover),
+:deep(.el-pagination .el-input__inner:hover) {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* 当前页码的样式 */
+:deep(.el-pagination .el-pager li.is-active) {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: #333 !important;
+  font-weight: bold;
+}
+
+/* 普通页码的样式 */
+:deep(.el-pagination .el-pager li) {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #333 !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* 页码悬停效果 */
+:deep(.el-pagination .el-pager li:hover:not(.is-active)) {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+:deep(.el-table) {
+  background-color: transparent !important;
+  color: white !important;  /* 输入文字颜色 */
+  font-size: 1.2rem !important;  /* 输入文字大小 */
+}
+
+:deep(.el-table tr), 
+:deep(.el-table th), 
+:deep(.el-table td) {
+  background-color: transparent !important;    color: white !important;  /* 输入文字颜色 */
+  font-size: 1.2rem !important;  /* 输入文字大小 */
+}
+
+:deep(.el-table--border), 
+:deep(.el-table--group) {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+:deep(.el-table td), 
+:deep(.el-table th.is-leaf) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+:deep(.el-table--border .el-table__cell) {
+  border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+:deep(.el-table__header-wrapper), 
+:deep(.el-table__footer-wrapper) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+:deep(.el-table__header-wrapper th) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  font-weight: bold;
+}
+
+:deep(.el-table__row:hover > td) {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 分页器文本样式 - 包括"共xx条"、"前往"等文字 */
+:deep(.el-pagination .el-pagination__total),
+:deep(.el-pagination .el-pagination__jump),
+:deep(.el-pagination .el-pagination__sizes),
+:deep(.el-pagination span:not([class])),
+:deep(.el-pagination button span) {
+  color: rgb(126, 119, 119) !important;
+  font-size: 1.2rem !important;
+}
+
+
 </style>
 
 

@@ -4,6 +4,9 @@
     v-model="dialogVisible"
     width="500px"
     :before-close="handleClose"
+    append-to-body
+    destroy-on-close
+    class="model-upload-dialog"
   >
     <el-form :model="form" label-width="100px" :rules="rules" ref="formRef">
       <el-form-item label="模型名称" prop="name">
@@ -45,7 +48,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="handleUpload" :loading="uploading">
+        <el-button type="primary" @click="handleUpload" :loading="uploading" style="width: 3rem;">
           上传
         </el-button>
       </span>
@@ -149,7 +152,6 @@ const handleUpload = async () => {
         };
         
         const res = await uploadModel(uploadData);
-        
         if (res.code === 200) {
           ElMessage.success('模型上传成功');
           emit('uploaded');
@@ -188,4 +190,6 @@ const handleClose = () => {
 .upload-demo {
   width: 100%;
 }
+
+
 </style> 

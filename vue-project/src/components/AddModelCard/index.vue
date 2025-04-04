@@ -37,27 +37,28 @@ const emit = defineEmits(['model-uploaded']);
 
 <style scoped lang="scss">
 .add-model-card {
-  width: 320px;
   display: flex;
   align-items: center;
-  padding: 20px;
+  justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s;
-  border: 2px dashed #ccc;
-  background-color: #f9f9f9;
+  transition: transform 0.3s;
+  border: 2px dashed rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
 
   &:hover {
     transform: scale(1.02);
-    border-color: #409eff;
-    background-color: #f0f7ff;
+    border-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 }
 
 .card-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 20px;
-  width: 100%;
+  padding: 20px;
 }
 
 .add-icon {
@@ -66,27 +67,28 @@ const emit = defineEmits(['model-uploaded']);
   justify-content: center;
   width: 100px;
   height: 100px;
-  background-color: #e6f1fc;
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  color: #409eff;
+  color: white;
 }
 
 .add-text {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
 }
 
 h3 {
   font-size: 18px;
   font-weight: bold;
   margin: 0;
-  color: #409eff;
+  color: white;
 }
 
 p {
   font-size: 14px;
-  color: #666;
+  color: #e0e0e0;
   margin-top: 5px;
 }
 </style> 

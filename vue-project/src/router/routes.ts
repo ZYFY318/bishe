@@ -108,6 +108,25 @@ export const constantRoute = [
         },
       },
       {
+        path: "/product/exam",
+        component: () => import("@/views/product/exam/index.vue"),
+        name: "Exam",
+        meta: {
+          hidden: false,
+          title: "试卷管理",
+          icon: "Files",
+        },
+      },
+      {
+        path: "/product/examview",
+        component: () => import("@/views/product/examview/index.vue"),
+        name: "ExamView",
+        meta: {
+          hidden: true,
+          title: "试卷预览",
+        },
+      },
+      {
         path: "/product/sku",
         component: () => import("@/views/product/sku/index.vue"),
         name: "Sku",

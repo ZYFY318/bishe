@@ -43,9 +43,7 @@ const colors = [
   '#000000', '#ffffff', '#808080'
 ];
 
-const selectColor = (color: string) => {
-  console.log('Selected color:', color);
-};
+
 </script>
 
 <template>

@@ -4,7 +4,7 @@ import { reqAllQuestion, reqQuestion } from "@/api/product/trademark";
 
 export const useQuestion = () => {
   const pageNo = ref(1);
-  const limit = ref(3);
+  const limit = ref(5);
   const total = ref(0);
   const questionArr = ref<Question[]>([]);
 

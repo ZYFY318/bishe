@@ -45,9 +45,14 @@ const handleClick = () => {
 
 <style scoped lang="scss">
 .item-card {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  // background: #ffffff;
+  // border-radius: 8px;
+  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px ;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   padding: 16px;
   cursor: pointer;
   transition: all 0.3s ease;

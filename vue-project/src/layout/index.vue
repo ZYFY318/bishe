@@ -1,7 +1,7 @@
 <template>
     <div class="layout_container">
         <!-- 左侧菜单 -->
-        <div class="layout_slider" :class="{ fold: LayOutSettingStore.fold }">
+        <div class="layout_slider animate-left" :class="{ fold: LayOutSettingStore.fold }">
             <div class="logo-container">
                 <Logo></Logo>
             </div>
@@ -19,11 +19,11 @@
         <!-- 主内容区域 -->
         <div class="layout_content">
             <!-- 顶部导航 -->
-            <div class="layout_tabbar">
+            <div class="layout_tabbar animate-top">
                 <tabbar></tabbar>
             </div>
             <!-- 内容 -->
-            <div class="layout_main">
+            <div class="layout_main animate-right">
                 <Main></Main>
             </div>
         </div>
@@ -54,7 +54,8 @@ const userStore = useUserStore();
     left: 0;
     width: 100%;
     height: 100vh;
-    // background-color: red;
+    background: url('../assets/images/p1.png') no-repeat center center;
+    background-size: cover;
 }
 
 .layout_slider {
@@ -101,5 +102,79 @@ const userStore = useUserStore();
     /* 去除右侧边框 */
 }
 
+/* 添加动画关键帧 */
+@keyframes layoutSlideFromLeft {
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes layoutSlideFromTop {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes layoutSlideFromRight {
+    from {
+        transform: translateX(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 应用动画的类 - 更具体的选择器 */
+.layout_container .animate-left {
+    animation: layoutSlideFromLeft 0.8s ease forwards;
+    opacity: 0;
+}
+
+.layout_container .animate-top {
+    animation: layoutSlideFromTop 0.8s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+.layout_container .animate-right {
+    animation: layoutSlideFromRight 0.8s ease forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
+}
+
+/* 确保动画结束后保持状态 */
+.layout_container .animate-left, 
+.layout_container .animate-top, 
+.layout_container .animate-right {
+    animation-fill-mode: forwards;
+}
+
+/* 添加过渡效果 */
+.layout_slider {
+    transition: width 0.3s ease;
+    /* 其他现有样式保持不变 */
+}
+
+.layout_tabbar {
+    transition: all 0.3s ease;
+    /* 其他现有样式保持不变 */
+}
+
+.layout_main {
+    transition: all 0.3s ease;
+    /* 其他现有样式保持不变 */
+}
 
 </style>
