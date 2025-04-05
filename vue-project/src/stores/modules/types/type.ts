@@ -6,4 +6,5 @@ export interface UserState {
   username: string;
   avatar: string;
   userId: number;
+  userType: string
 }

@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
     AddModelCard: typeof import('./src/components/AddModelCard/index.vue')['default']
+    BackgroundSelector: typeof import('./src/components/BackgroundSelector.vue')['default']
     Barchats: typeof import('./src/components/echarts/barchats/index.vue')['default']
     Echarts: typeof import('./src/components/echarts/index.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

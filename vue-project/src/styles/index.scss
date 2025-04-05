@@ -1,1 +1,94 @@
-@import "./reset.scss";
+// @import "./reset.scss";
+
+// 全局样式入口文件
+
+// 导入卡片样式
+@import './card.scss';
+
+// 全局通用样式
+:root {
+  // 主题颜色
+  --primary-color: #409eff;
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+  --info-color: #909399;
+  
+  // 背景颜色
+  --bg-color: #f5f7fa;
+  --card-bg-color: rgba(255, 255, 255, 0.1);
+  
+  // 文字颜色
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-disabled: rgba(255, 255, 255, 0.5);
+  
+  // 边框颜色
+  --border-color: rgba(255, 255, 255, 0.2);
+  --border-hover-color: rgba(255, 255, 255, 0.4);
+  
+  // 阴影
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --box-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.1);
+  
+  // 过渡
+  --transition-duration: 0.3s;
+  
+  // 圆角
+  --border-radius: 8px;
+}
+
+// 全局基础样式重置
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+// 背景模糊效果
+.blur-backdrop {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+// 文本截断
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 过渡效果
+.transition {
+  transition: all var(--transition-duration) ease;
+}
+
+// 自定义滚动条
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

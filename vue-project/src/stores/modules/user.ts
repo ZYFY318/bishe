@@ -18,6 +18,7 @@ let useUserStore = defineStore("User", {
       username: "",
       avatar: "",
       userId: 0,
+      userType: "",
     };
   },
   //异步|逻辑
@@ -43,6 +44,7 @@ let useUserStore = defineStore("User", {
         this.username = result.data.username;
         this.avatar = result.data.avatar;
         this.userId = result.data.userId;
+        this.userType = result.data.userType;
         console.log(this.avatar);
         return "ok";
       } else {
@@ -54,6 +56,7 @@ let useUserStore = defineStore("User", {
       this.token = "";
       this.username = "";
       this.avatar = "";
+      this.userType = "";
       await reqLogout();
       REMOVE_TOKEN();
     },

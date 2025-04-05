@@ -64,6 +64,7 @@ import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { createExam } from '@/api/product/exam'; // 引入创建试卷API
 import type { ExamCreateData } from '@/api/product/exam/type'; // 引入试卷创建参数类型
+import useUserStore from '@/stores/modules/user';
 
 const props = defineProps({
   visible: {
@@ -158,10 +159,14 @@ const handleSubmit = async () => {
       submitting.value = true;
       
       try {
+        // 导入用户仓库以获取用户ID
+        const userStore = useUserStore();
+        
         // 创建试卷数据对象，确保类型正确
         const examData: ExamCreateData = {
           title: form.title,
-          duration: form.duration
+          duration: form.duration,
+          creatorId: userStore.userId // 添加创建者ID
         };
         
         // 只有当 cover 存在时才添加到对象中

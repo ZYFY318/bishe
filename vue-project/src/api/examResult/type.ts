@@ -4,7 +4,6 @@ export interface ExamResult {
   examDate: string; // ISO 格式字符串
   score: number;
   duration: number;
-  examType: 1 | 2 | 3; // 1: 小测试, 2: 中测试, 3: 大测试
 }
 
 // 统一的 API 响应格式

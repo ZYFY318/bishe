@@ -22,26 +22,30 @@
               </el-button>
             </el-empty>
           </div>
-          <div v-else class="question-list">
-            <el-card v-for="(question, index) in selectedQuestions" :key="question.id" class="question-card">
-              <div class="question-header">
-                <div class="question-number">第 {{ index + 1 }} 题</div>
-                <el-button type="danger" size="small" text @click="removeQuestion(question.id)">
-                  <el-icon><Delete /></el-icon>
-                  移除
-                </el-button>
-              </div>
-              <div class="question-title">{{ question.title }}</div>
-              <div class="question-options">
-                <div v-for="(option, optIndex) in question.options" :key="optIndex" class="option">
-                  <span class="option-label">{{ String.fromCharCode(65 + optIndex) }}.</span>
-                  <span class="option-text" :class="{ 'is-correct': question.answer === String.fromCharCode(65 + optIndex) }">
-                    {{ option }}
-                  </span>
+          <el-scrollbar v-else height="70vh" class="custom-scrollbar">
+            <div class="question-list">
+              <el-card v-for="(question, index) in selectedQuestions" :key="question.id" class="question-card">
+                <div class="question-header">
+                  <div class="question-number">第 {{ index + 1 }} 题</div>
+                  <el-button type="danger" size="small" text @click="removeQuestion(question.id)">
+                    <el-icon><Delete /></el-icon>
+                    移除
+                  </el-button>
                 </div>
-              </div>
-            </el-card>
-          </div>
+                <div class="question-title">{{ question.title }}</div>
+                <el-scrollbar height="150px" class="options-scrollbar">
+                  <div class="question-options">
+                    <div v-for="(option, optIndex) in question.options" :key="optIndex" class="option">
+                     
+                      <span class="option-text" :class="{ 'is-correct': question.answer === String.fromCharCode(65 + optIndex) }">
+                        {{ option }}
+                      </span>
+                    </div>
+                  </div>
+                </el-scrollbar>
+              </el-card>
+            </div>
+          </el-scrollbar>
         </el-tab-pane>
         <el-tab-pane label="题库" name="question-bank">
           <div class="search-bar">
@@ -59,35 +63,37 @@
               添加选中题目 ({{ selectedQuestionIds.length }})
             </el-button>
           </div>
-          <el-table
-            v-loading="loading"
-            :data="questions"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55" />
-            <el-table-column label="题目内容" prop="title" show-overflow-tooltip />
-            <el-table-column label="操作" width="120">
-              <template #default="{ row }">
-                <el-button
-                  v-if="!isQuestionSelected(row.id)"
-                  type="primary"
-                  size="small"
-                  @click="addQuestion(row)"
-                >
-                  添加
-                </el-button>
-                <el-button
-                  v-else
-                  type="info"
-                  size="small"
-                  disabled
-                >
-                  已添加
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <el-scrollbar height="60vh" class="table-scrollbar">
+            <el-table
+              v-loading="loading"
+              :data="questions"
+              style="width: 100%"
+              @selection-change="handleSelectionChange"
+            >
+              <el-table-column type="selection" width="55" />
+              <el-table-column label="题目内容" prop="title" show-overflow-tooltip />
+              <el-table-column label="操作" width="120">
+                <template #default="{ row }">
+                  <el-button
+                    v-if="!isQuestionSelected(row.id)"
+                    type="primary"
+                    size="small"
+                    @click="addQuestion(row)"
+                  >
+                    添加
+                  </el-button>
+                  <el-button
+                    v-else
+                    type="info"
+                    size="small"
+                    disabled
+                  >
+                    已添加
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-scrollbar>
           <div class="pagination">
             <el-pagination
               v-model:current-page="currentPage"
@@ -271,7 +277,15 @@ const saveExam = async () => {
 
 // 返回上一页
 const goBack = () => {
-  router.back();
+  // router.back();
+  // 直接导航到试卷预览页面，确保返回到正确的路由
+  router.push({
+    path: '/examview',
+    query: {
+      examId: examId.value,
+      examTitle: examTitle.value
+    }
+  });
 };
 
 // 处理搜索
@@ -303,7 +317,7 @@ onMounted(() => {
   margin: 20px auto;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 140px);
+  min-height: calc(100vh - 160px);
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
@@ -353,6 +367,7 @@ onMounted(() => {
 
 .question-list {
   margin-top: 20px;
+
 }
 
 .question-card {
@@ -466,5 +481,87 @@ onMounted(() => {
   --el-pagination-text-color: white;
   --el-pagination-button-color: white;
   --el-pagination-hover-color: white;
+}
+
+/* el-scrollbar样式自定义 */
+.custom-scrollbar {
+  :deep(.el-scrollbar__bar) {
+    opacity: 0.3;
+    
+    &.is-horizontal {
+      height: 8px;
+    }
+    
+    &.is-vertical {
+      width: 8px;
+    }
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  
+  :deep(.el-scrollbar__thumb) {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+.options-scrollbar {
+  :deep(.el-scrollbar__bar) {
+    opacity: 0.2;
+    
+    &.is-horizontal {
+      height: 6px;
+    }
+    
+    &.is-vertical {
+      width: 6px;
+    }
+    
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+  
+  :deep(.el-scrollbar__thumb) {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+.table-scrollbar {
+  :deep(.el-scrollbar__bar) {
+    opacity: 0.3;
+    
+    &.is-horizontal {
+      height: 8px;
+    }
+    
+    &.is-vertical {
+      width: 8px;
+    }
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  
+  :deep(.el-scrollbar__thumb) {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
 }
 </style> 

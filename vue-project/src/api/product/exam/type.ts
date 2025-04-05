@@ -5,6 +5,9 @@ export interface ExamItem {
   coverUrl: string;
   duration: number;
   createdAt: string;
+  published?: boolean; // 发布状态，true为已发布，false或undefined为未发布
+  creatorId?: number; // 创建者ID
+  creatorName?: string; // 创建者用户名
 }
 
 // 试卷列表的响应数据接口
@@ -25,6 +28,7 @@ export interface ExamResponse {
 export interface ExamCreateData {
   title: string;
   duration: number;
+  creatorId: number;
   cover?: File;
 }
 

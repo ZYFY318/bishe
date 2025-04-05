@@ -1,14 +1,18 @@
 <template>
-  <div class="item-card" @click="handleClick">
+  <el-card class="base-card model-card" @click="handleClick">
     <div class="card-content">
-      <img :src="modelImage" alt="Model preview" class="model-preview" />
-      <div class="model-info">
-        <h3>{{ props.modelItem.name }}</h3>
-        <p>{{ props.modelItem.description }}</p>
-        <p class="created-time">创建时间: {{ new Date(props.modelItem.created_at).toLocaleString() }}</p>
+      <div class="card-image">
+        <img :src="modelImage" alt="Model preview" />
+      </div>
+      <div class="card-info">
+        <h3 class="card-title">{{ props.modelItem.name }}</h3>
+        <p class="card-description">{{ props.modelItem.description }}</p>
+        <div class="card-details">
+          <p class="created-time"><el-icon><Calendar /></el-icon> {{ formatDate(props.modelItem.created_at) }}</p>
+        </div>
       </div>
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script setup lang="ts">
@@ -16,6 +20,7 @@ import { defineProps, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import type { PropType } from 'vue';
 import type { ModelItem } from '@/api/model/type';
+import { Calendar } from '@element-plus/icons-vue';
 
 const router = useRouter();
 
@@ -32,6 +37,12 @@ const modelImage = computed(() => {
   return props.modelItem.imageUrl || '/hakasei.png';
 });
 
+// 格式化日期
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+};
+
 const handleClick = () => {
   router.push({
     path: '/showModel',
@@ -44,56 +55,10 @@ const handleClick = () => {
 </script>
 
 <style scoped lang="scss">
-.item-card {
-  // background: #ffffff;
-  // border-radius: 8px;
-  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px ;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15);
-  }
-}
+@import '@/styles/card.scss';
 
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.model-card {
+  // 特定于模型卡片的额外样式
 
-.model-info {
-  h3 {
-    margin: 0 0 8px;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  p {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
-    
-    &.created-time {
-      margin-top: 8px;
-      color: #999;
-      font-size: 12px;
-    }
-  }
-}
-
-.model-preview {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 12px;
 }
 </style>

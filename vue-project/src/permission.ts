@@ -18,7 +18,8 @@ router.beforeEach(async (to, from, next) => {
   const token = userStore.token;
   const username = userStore.username;
   if (token) {
-    if (to.path == "./login") {
+    // 已登录用户不能访问登录和注册页面
+    if (to.path == "/login" || to.path == "/register") {
       next({ path: "/" });
     } else {
       if (username) {
@@ -31,12 +32,14 @@ router.beforeEach(async (to, from, next) => {
         } catch (error) {
           //token过期
           userStore.userLogout();
-          next({ path: "./login" });
+          next({ path: "/login" });
         }
       }
     }
   } else {
-    if (to.path == "/login") {
+    // 未登录用户可以访问的路径列表
+    const whiteList = ['/login', '/register'];
+    if (whiteList.includes(to.path)) {
       next();
     } else {
       next({ path: "/login", query: { redirect: to.path } });
@@ -49,5 +52,5 @@ router.afterEach((to, from) => {
   nprogress.done();
 });
 
-//用户未登录：可以访问login,其余六个路由不能访问
-//用户登录成功：不可以访问login，其余的路由可以访问
+//用户未登录：可以访问login和register,其余路由不能访问
+//用户登录成功：不可以访问login和register，其余的路由可以访问

@@ -34,7 +34,6 @@
           <div class="question-title">{{ question.title }}</div>
           <div class="question-options">
             <div v-for="(option, optIndex) in question.options" :key="optIndex" class="option">
-              <span class="option-label">{{ String.fromCharCode(65 + optIndex) }}.</span>
               <span class="option-text">{{ option }}</span>
             </div>
           </div>
@@ -51,14 +50,16 @@ import { ArrowLeft, DocumentCopy, Edit } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { getExamQuestions } from '@/api/product/exam';
 import type { QuestionItem } from '@/api/product/exam/type';
+import useUserStore from '@/stores/modules/user';
 
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 
 // 从路由参数中获取试卷ID和标题
 const examId = ref(Number(route.query.examId) || 0);
 const examTitle = ref(route.query.examTitle as string || '未命名试卷');
-const canEdit = ref(true); // 这里可以根据用户权限判断是否可以编辑
+const canEdit = ref(userStore.userType === 'TEACHER'); // 只有教师可以编辑试卷
 
 // 试卷内容
 const loading = ref(false);
@@ -87,15 +88,22 @@ const loadExamData = async () => {
   }
 };
 
-// 返回上一页
+// 返回上一页，根据用户角色决定返回路径
 const goBack = () => {
-  router.back();
+  // 根据用户角色决定返回的页面
+  if (userStore.userType === 'TEACHER') {
+    // 教师返回试卷管理页面
+    router.push('/product/exam');
+  } else {
+    // 学生返回试卷列表页面
+    router.push('/study/exam-list');
+  }
 };
 
 // 前往编辑页面
 const goToEdit = () => {
   router.push({
-    path: '/product/examview/edit',
+    path: '/examview/edit',
     query: {
       examId: examId.value,
       examTitle: examTitle.value
