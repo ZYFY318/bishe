@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { ExamResult, ResponseMessage } from "@/types";
+import type { ExamResult, ResponseMessage } from "./type";
 
 // 定义 API 枚举
 enum API {
