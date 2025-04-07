@@ -311,257 +311,133 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .exam-edit-container {
-  width: 90%;
-  margin: 20px auto;
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 160px);
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-}
-
-.exam-header {
-  display: flex;
-  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-color);
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.05);
-}
+  box-sizing: border-box;
+  color: var(--text-color);
+  transition: background-color 0.3s;
 
-.back-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 16px;
-  color: white;
-}
+  .exam-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
 
-.exam-title {
-  margin: 0 0 0 20px;
-  font-size: 24px;
-  font-weight: 600;
-  color: white;
-  flex: 1;
-}
-
-.exam-content {
-  flex: 1;
-  padding: 20px;
-}
-
-.empty-questions {
-  text-align: center;
-  padding: 40px 0;
-}
-
-.empty-icon {
-  font-size: 100px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.question-list {
-  margin-top: 20px;
-
-}
-
-.question-card {
-  margin-bottom: 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.question-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.question-number {
-  font-weight: bold;
-  color: white;
-}
-
-.question-title {
-  font-size: 16px;
-  margin-bottom: 15px;
-  color: white;
-}
-
-.question-options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.option {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  color: white;
-}
-
-.option-label {
-  min-width: 24px;
-}
-
-.option-text {
-  flex: 1;
-}
-
-.is-correct {
-  color: #67c23a;
-  font-weight: bold;
-}
-
-.search-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: end;
-}
-
-:deep(.el-empty__description) {
-  color: white;
-  font-size: 18px;
-}
-
-:deep(.el-tabs__item) {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-:deep(.el-tabs__item.is-active) {
-  color: white;
-}
-
-:deep(.el-tabs__active-bar) {
-  background-color: white;
-}
-
-:deep(.el-tabs__nav-wrap::after) {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-:deep(.el-card__body) {
-  padding: 15px;
-}
-
-:deep(.el-table) {
-  background-color: transparent;
-}
-
-:deep(.el-table th.el-table__cell) {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-:deep(.el-table tr) {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-:deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-:deep(.el-table .cell) {
-  color: white;
-}
-
-:deep(.el-pagination) {
-  --el-pagination-text-color: white;
-  --el-pagination-button-color: white;
-  --el-pagination-hover-color: white;
-}
-
-/* el-scrollbar样式自定义 */
-.custom-scrollbar {
-  :deep(.el-scrollbar__bar) {
-    opacity: 0.3;
-    
-    &.is-horizontal {
-      height: 8px;
+    .exam-title {
+      font-size: 18px;
+      margin: 0;
+      color: var(--text-color);
     }
-    
-    &.is-vertical {
-      width: 8px;
-    }
-    
-    &:hover {
-      opacity: 0.8;
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
   }
-  
-  :deep(.el-scrollbar__thumb) {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.7);
-    }
-  }
-}
 
-.options-scrollbar {
-  :deep(.el-scrollbar__bar) {
-    opacity: 0.2;
-    
-    &.is-horizontal {
-      height: 6px;
-    }
-    
-    &.is-vertical {
-      width: 6px;
-    }
-    
-    &:hover {
-      opacity: 0.6;
-    }
-  }
-  
-  :deep(.el-scrollbar__thumb) {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.5);
-    }
-  }
-}
+  .exam-content {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
 
-.table-scrollbar {
-  :deep(.el-scrollbar__bar) {
-    opacity: 0.3;
-    
-    &.is-horizontal {
-      height: 8px;
+    .empty-questions {
+      padding: 40px 0;
+      
+      .empty-icon {
+        font-size: 60px;
+        color: var(--text-color-secondary);
+      }
     }
-    
-    &.is-vertical {
-      width: 8px;
+
+    .question-list {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    
-    &:hover {
-      opacity: 0.8;
+
+    .question-card {
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--card-bg);
+      box-shadow: var(--shadow);
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-color);
+
+        .question-number {
+          font-weight: bold;
+          color: var(--primary-color);
+        }
+      }
+
+      .question-title {
+        font-weight: 500;
+        margin-bottom: 12px;
+        color: var(--text-color);
+      }
+
+      .question-options {
+        padding: 8px 0;
+
+        .option {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 8px;
+          padding: 8px 12px;
+          border-radius: 4px;
+          background-color: var(--bg-color);
+
+          &:hover {
+            background-color: var(--hover-bg);
+          }
+
+          .option-text {
+            color: var(--text-color);
+
+            &.is-correct {
+              color: var(--success-color);
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .pagination {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
     }
   }
-  
-  :deep(.el-scrollbar__thumb) {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.7);
-    }
+
+  .table-scrollbar, .custom-scrollbar {
+    --el-scrollbar-bar-size: 6px;
+    --el-scrollbar-color: var(--primary-color);
   }
 }
 </style> 

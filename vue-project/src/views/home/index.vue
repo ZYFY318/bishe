@@ -26,7 +26,7 @@
   const fetchModelList = async () => {
     try {
       const response = await reqModelList();
-      console.log("here",response.data)
+      console.log("获取到模型列表:", response.data);
       if (response.code === 200) {
         items.value = response.data;
       } else {

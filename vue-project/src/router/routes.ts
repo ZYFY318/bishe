@@ -66,13 +66,13 @@ export const constantRoute = [
   },
   {
     path: "/screen",
-    component: () => import("@/views/screen/index.vue"),
+    component: () => import("@/views/profile/index.vue"),
     name: "Screen",
     meta: {
       hidden: false,
       title: "个人中心",
       icon: "Platform",
-      roles: ["STUDENT"],
+
     },
   },
   {

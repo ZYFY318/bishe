@@ -35,13 +35,20 @@ export const uploadModel = (data: ModelUploadData | FormData) => {
     // 可选字段
     if (data.creatorId !== undefined) {
       formData.append('creatorId', data.creatorId.toString());
+      console.log("设置creatorId:", data.creatorId.toString());
     }
+    
     if (data.image) {
       formData.append('image', data.image);
     }
   } else {
     // 如果已经是FormData，直接使用
     formData = data;
+    // 输出FormData的内容进行调试
+    console.log("FormData内容:");
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
   }
   
   return request.post<any, ModelUploadResponse>(API.UPLOAD_MODEL, formData, {

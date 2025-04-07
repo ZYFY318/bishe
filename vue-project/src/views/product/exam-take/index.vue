@@ -589,6 +589,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   height: calc(100vh - 80px);
   overflow: hidden;
+  color: var(--text-color);
 }
 
 .exam-header {
@@ -596,11 +597,11 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background-color: var(--card-bg);
   border-radius: 10px;
   margin-bottom: 20px;
   position: relative;
+  box-shadow: var(--shadow);
   
   .exit-button {
     position: absolute;
@@ -610,7 +611,7 @@ onBeforeUnmount(() => {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--border-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -618,12 +619,12 @@ onBeforeUnmount(() => {
     transition: all 0.3s;
     
     &:hover {
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: var(--primary-color);
     }
     
     .back-icon {
       font-size: 18px;
-      color: white;
+      color: var(--text-color);
     }
   }
   
@@ -632,13 +633,14 @@ onBeforeUnmount(() => {
     .exam-title {
       font-size: 24px;
       margin: 0 0 10px;
-      color: white;
+      color: var(--text-color);
     }
     
     .exam-meta {
       display: flex;
       gap: 15px;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--text-color);
+      opacity: 0.8;
       
       span {
         display: flex;
@@ -649,7 +651,8 @@ onBeforeUnmount(() => {
   }
   
   .exam-timer {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     padding: 15px 20px;
     border-radius: 8px;
     text-align: center;
@@ -662,42 +665,15 @@ onBeforeUnmount(() => {
         font-size: 22px;
         font-weight: bold;
         font-family: monospace;
-        color: #ff6b6b;
+        color: var(--danger-color);
       }
       
       .time-label {
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--text-color);
+        opacity: 0.7;
         margin-top: 4px;
       }
-    }
-  }
-  
-  .exam-score {
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 15px 20px;
-    border-radius: 8px;
-    text-align: center;
-    
-    .score-display {
-      margin-bottom: 10px;
-      
-      .score-value {
-        font-size: 22px;
-        font-weight: bold;
-        font-family: monospace;
-        color: #ff6b6b;
-      }
-      
-      .score-label {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.7);
-      }
-    }
-    
-    .correct-count {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.8);
     }
   }
 }
@@ -705,8 +681,9 @@ onBeforeUnmount(() => {
 .loading-container {
   flex: 1;
   padding: 40px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--card-bg);
   border-radius: 10px;
+  box-shadow: var(--shadow);
 }
 
 .empty-container {
@@ -714,13 +691,15 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--card-bg);
   border-radius: 10px;
   padding: 40px;
+  box-shadow: var(--shadow);
   
   .empty-icon {
     font-size: 100px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-color);
+    opacity: 0.3;
   }
 }
 
@@ -745,23 +724,25 @@ onBeforeUnmount(() => {
       
       .question-card {
         margin-bottom: 20px;
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: var(--card-bg);
         border-radius: 10px;
         transition: all 0.3s ease;
         padding: 20px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
         
         &.is-answered {
-          border: 1px solid rgba(64, 158, 255, 0.5);
+          border: 1px solid var(--primary-color);
           box-shadow: 0 0 10px rgba(64, 158, 255, 0.2);
         }
         
         &.is-correct {
-          border: 1px solid rgba(103, 194, 58, 0.5);
+          border: 1px solid var(--success-color);
           box-shadow: 0 0 10px rgba(103, 194, 58, 0.2);
         }
         
         &.is-incorrect {
-          border: 1px solid rgba(245, 108, 108, 0.5);
+          border: 1px solid var(--danger-color);
           box-shadow: 0 0 10px rgba(245, 108, 108, 0.2);
         }
         
@@ -772,11 +753,12 @@ onBeforeUnmount(() => {
           
           .question-number {
             font-weight: bold;
-            color: white;
+            color: var(--text-color);
             font-size: 16px;
-            background-color: rgba(64, 158, 255, 0.2);
+            background-color: var(--primary-color);
             padding: 4px 10px;
             border-radius: 4px;
+            color: white;
           }
           
           .question-result {
@@ -785,15 +767,16 @@ onBeforeUnmount(() => {
             font-weight: bold;
             
             .correct {
-              color: #67c23a;
+              color: var(--success-color);
             }
             
             .incorrect {
-              color: #f56c6c;
+              color: var(--danger-color);
             }
             
             .unanswered {
-              color: #909399;
+              color: var(--text-color);
+              opacity: 0.6;
             }
           }
         }
@@ -802,7 +785,7 @@ onBeforeUnmount(() => {
           font-size: 18px !important;
           font-weight: 600 !important;
           margin-bottom: 20px;
-          color: white;
+          color: var(--text-color);
           line-height: 1.5;
         }
         
@@ -812,23 +795,23 @@ onBeforeUnmount(() => {
             align-items: flex-start;
             margin-right: 0;
             margin-bottom: 10px;
-            color: white;
+            color: var(--text-color);
             padding: 8px 12px;
             border-radius: 5px;
             transition: background-color 0.3s;
             
             &.correct-option {
-              background-color: rgba(103, 194, 58, 0.2);
+              background-color: rgba(103, 194, 58, 0.1);
               border: 1px solid rgba(103, 194, 58, 0.5);
             }
             
             &.incorrect-option {
-              background-color: rgba(245, 108, 108, 0.2);
+              background-color: rgba(245, 108, 108, 0.1);
               border: 1px solid rgba(245, 108, 108, 0.5);
             }
             
             &:hover {
-              background-color: rgba(255, 255, 255, 0.1);
+              background-color: var(--border-color);
             }
           }
           
@@ -845,7 +828,7 @@ onBeforeUnmount(() => {
           }
           
           :deep(.el-radio__label) {
-            color: #e5eaf3;
+            color: var(--text-color);
             padding-left: 8px;
             display: flex;
             font-size: 16px;
@@ -853,15 +836,15 @@ onBeforeUnmount(() => {
           }
           
           :deep(.el-radio__inner) {
-            background-color: transparent;
-            border-color: rgba(255, 255, 255, 0.5);
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
           }
         }
         
         .answer-explanation {
           margin-top: 15px;
           padding-top: 15px;
-          border-top: 1px dashed rgba(255, 255, 255, 0.2);
+          border-top: 1px dashed var(--border-color);
           
           .user-answer, .correct-answer {
             display: flex;
@@ -871,11 +854,11 @@ onBeforeUnmount(() => {
           }
           
           .user-answer {
-            color: #e9ecf1;
+            color: var(--text-color);
           }
           
           .correct-answer {
-            color: #67c23a;
+            color: var(--success-color);
           }
         }
       }
@@ -883,19 +866,20 @@ onBeforeUnmount(() => {
     
     .answer-card {
       width: 250px;
-      background-color: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      background-color: var(--card-bg);
       border-radius: 10px;
       padding: 20px;
       height: fit-content;
       position: sticky;
       top: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
       
       .card-title {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 15px;
-        color: white;
+        color: var(--text-color);
         text-align: center;
       }
       
@@ -905,7 +889,7 @@ onBeforeUnmount(() => {
         .progress-text {
           display: flex;
           justify-content: space-between;
-          color: white;
+          color: var(--text-color);
           margin-bottom: 8px;
         }
       }
@@ -946,7 +930,7 @@ onBeforeUnmount(() => {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: #e6a23c;
+    color: var(--warning-color);
     
     .el-icon {
       font-size: 18px;
@@ -968,7 +952,7 @@ onBeforeUnmount(() => {
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background-color: #409eff;
+      background-color: var(--primary-color);
       color: white;
       display: flex;
       justify-content: center;
@@ -980,7 +964,7 @@ onBeforeUnmount(() => {
     
     .score-text {
       font-size: 16px;
-      color: #606266;
+      color: var(--text-color);
     }
   }
   
@@ -996,31 +980,32 @@ onBeforeUnmount(() => {
       
       .stat-label {
         font-size: 14px;
-        color: #909399;
+        color: var(--text-color);
+        opacity: 0.7;
         margin-bottom: 5px;
       }
       
       .stat-value {
         font-size: 18px;
         font-weight: bold;
-        color: #606266;
+        color: var(--text-color);
       }
     }
   }
 }
 
 :deep(.el-dialog__header) {
-  border-bottom: 1px solid #ebeef5;
+  border-bottom: 1px solid var(--border-color);
 }
 
 :deep(.el-radio__input.is-checked + .el-radio__label) {
-  color: white;
+  color: var(--primary-color);
 }
 
 /* 自定义滚动条 */
 .questions-wrapper {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  scrollbar-color: var(--border-color) transparent;
   
   &::-webkit-scrollbar {
     width: 6px;
@@ -1031,7 +1016,7 @@ onBeforeUnmount(() => {
   }
   
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: var(--border-color);
     border-radius: 3px;
   }
 }
@@ -1039,19 +1024,20 @@ onBeforeUnmount(() => {
 // 已完成试卷的侧边栏样式
 .result-sidebar {
   width: 250px;
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background-color: var(--card-bg);
   border-radius: 10px;
   padding: 20px;
   height: fit-content;
   position: sticky;
   top: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
   
   .card-title {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 15px;
-    color: white;
+    color: var(--text-color);
     text-align: center;
   }
   
@@ -1066,7 +1052,7 @@ onBeforeUnmount(() => {
         width: 80px;
         height: 80px;
         border-radius: 50%;
-        background-color: #409eff;
+        background-color: var(--primary-color);
         color: white;
         display: flex;
         justify-content: center;
@@ -1078,7 +1064,8 @@ onBeforeUnmount(() => {
       
       .score-text {
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--text-color);
+        opacity: 0.7;
       }
     }
     
@@ -1093,12 +1080,13 @@ onBeforeUnmount(() => {
         align-items: center;
         
         .stat-label {
-          color: rgba(255, 255, 255, 0.7);
+          color: var(--text-color);
+          opacity: 0.7;
           font-size: 14px;
         }
         
         .stat-value {
-          color: white;
+          color: var(--text-color);
           font-weight: bold;
           font-size: 14px;
         }
@@ -1109,7 +1097,8 @@ onBeforeUnmount(() => {
   .legend {
     margin-bottom: 20px;
     padding: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     
     .legend-item {
@@ -1124,20 +1113,23 @@ onBeforeUnmount(() => {
         margin-right: 8px;
         
         &.correct {
-          background-color: rgba(103, 194, 58, 0.6);
+          background-color: var(--success-color);
+          opacity: 0.6;
         }
         
         &.incorrect {
-          background-color: rgba(245, 108, 108, 0.6);
+          background-color: var(--danger-color);
+          opacity: 0.6;
         }
         
         &.unanswered {
-          background-color: rgba(144, 147, 153, 0.6);
+          background-color: var(--text-color);
+          opacity: 0.3;
         }
       }
       
       .legend-text {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--text-color);
         font-size: 12px;
       }
     }

@@ -15,7 +15,7 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background: url('../assets/images/p1.png') no-repeat center center;
-  background-size: cover;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s ease;
 }
 </style> 

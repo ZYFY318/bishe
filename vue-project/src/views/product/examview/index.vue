@@ -123,11 +123,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 140px);
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 
@@ -135,8 +134,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-bg);
 }
 
 .back-button {
@@ -144,14 +143,14 @@ onMounted(() => {
   align-items: center;
   gap: 5px;
   font-size: 16px;
-  color: white;
+  color: var(--text-color);
 }
 
 .exam-title {
   margin: 0 0 0 20px;
   font-size: 24px;
   font-weight: 600;
-  color: white;
+  color: var(--text-color);
   flex: 1;
 }
 
@@ -166,12 +165,13 @@ onMounted(() => {
 
 .placeholder-text {
   text-align: center;
-  color: white;
+  color: var(--text-color);
 }
 
 .empty-icon {
   font-size: 100px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-color);
+  opacity: 0.5;
 }
 
 .questions-list {
@@ -180,8 +180,8 @@ onMounted(() => {
 
 .question-card {
   margin-bottom: 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
 }
 
 .question-header {
@@ -193,13 +193,14 @@ onMounted(() => {
 
 .question-number {
   font-weight: bold;
-  color: white;
+  color: var(--text-color);
 }
 
 .question-title {
   font-size: 16px;
-  margin-bottom: 15px;
-  color: white;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-color);
 }
 
 .question-options {
@@ -209,26 +210,13 @@ onMounted(() => {
 }
 
 .option {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  color: white;
-}
-
-.option-label {
-  min-width: 24px;
-}
-
-.option-text {
-  flex: 1;
-}
-
-:deep(.el-empty__description) {
-  color: white;
-  font-size: 18px;
-}
-
-:deep(.el-card__body) {
-  padding: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  
+  .option-text {
+    color: var(--text-color);
+  }
 }
 </style> 

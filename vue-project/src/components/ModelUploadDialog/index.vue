@@ -134,6 +134,10 @@ const handleFileChange = (file: any) => {
       return false;
     }
     
+    // 显示文件大小信息
+    const fileSizeMB = (file.raw.size / 1024 / 1024).toFixed(2);
+    ElMessage.info(`已选择文件: ${file.raw.name} (${fileSizeMB}MB)`);
+    
     form.file = file.raw;
   }
 };
@@ -148,18 +152,25 @@ const handleUpload = async () => {
       try {
         // 获取用户信息
         const userStore = useUserStore();
+        console.log("当前用户ID:", userStore.userId);
         
         // 创建FormData对象来处理文件上传
         const formData = new FormData();
         formData.append('file', form.file);
         formData.append('name', form.name);
         formData.append('description', form.description);
-        formData.append('creatorId', userStore.userId.toString());
+        
+        // 确保userId是数字并正确传递
+        if (userStore.userId) {
+          formData.append('creatorId', userStore.userId.toString());
+          console.log("添加creatorId到FormData:", userStore.userId);
+        }
         
         // 调用上传API
         const res = await uploadModel(formData);
         
         if (res.code === 200) {
+          console.log("上传成功，返回数据:", res.data);
           ElMessage.success('模型上传成功');
           emit('uploaded');
           handleClose();
