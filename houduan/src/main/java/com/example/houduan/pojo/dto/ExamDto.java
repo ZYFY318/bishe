@@ -16,4 +16,9 @@ public class ExamDto {
     
     // 用于保存封面图片URL
     private String coverUrl;
+    
+    // 试卷创建者ID
+    private Integer creatorId;
+
+    
 } 

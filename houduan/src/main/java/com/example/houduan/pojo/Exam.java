@@ -22,6 +22,16 @@ public class Exam {
     
     private Integer duration;
     
+    @Column(name = "published", columnDefinition = "boolean default false")
+    private Boolean published = false;
+    
+    @Column(name = "creator_id")
+    private Integer creatorId;
+    
+    // 创建者用户名，不映射到数据库
+    @Transient
+    private String creatorName;
+    
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

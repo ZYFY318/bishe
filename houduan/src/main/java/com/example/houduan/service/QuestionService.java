@@ -63,7 +63,17 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
-    public Page getQuestionsByPage(Pageable pageable) {
+    public Page<Question> getQuestionsByPage(Pageable pageable) {
         return questionRepository.findAll(pageable);
+    }
+    
+    @Override
+    public Page<Question> searchQuestions(String keyword, Pageable pageable) {
+        // 如果关键词为空，返回所有题目
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return questionRepository.findAll(pageable);
+        }
+        // 否则根据关键词搜索题目
+        return questionRepository.findByTitleContainingIgnoreCase(keyword.trim(), pageable);
     }
 }

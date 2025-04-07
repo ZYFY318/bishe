@@ -9,13 +9,16 @@ public class UserDto {
     private String userName;
     @NotBlank(message = "密码不能为空")
     private String password;
+    
+    private String userType;
 
     private String email;
 
-    public UserDto(Integer userId, String userName, String password, String email) {
+    public UserDto(Integer userId, String userName, String password, String userType, String email) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
+        this.userType = userType;
         this.email = email;
     }
 
@@ -25,6 +28,7 @@ public class UserDto {
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
+                ", userType='" + userType + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }
@@ -51,6 +55,14 @@ public class UserDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getEmail() {

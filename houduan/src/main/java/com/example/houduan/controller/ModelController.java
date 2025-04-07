@@ -37,7 +37,9 @@ public class ModelController {
                         model.getName(),
                         model.getDescription(),
                         model.getImageUrl(),
-                        model.getCreatedAt()))
+                        model.getCreatedAt(),
+                        model.getCreatorId(),
+                        model.getCreatorName()))
                 .toList();
         return ResponseMessage.success(modelListDtos);
     }
@@ -72,7 +74,8 @@ public class ModelController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "imageUrl", required = false) String imageUrl) throws IOException {
+            @RequestParam(value = "imageUrl", required = false) String imageUrl,
+            @RequestParam(value = "creatorId", required = false) Integer creatorId) throws IOException {
         
         // 创建ModelDto对象
         ModelDto modelDto = new ModelDto();
@@ -80,6 +83,7 @@ public class ModelController {
         modelDto.setDescription(description);
         modelDto.setImageUrl(imageUrl);
         modelDto.setFileName(file.getOriginalFilename());
+        modelDto.setCreatorId(creatorId);
         
         // 保存模型信息
         Model newModel = modelService.addModel(modelDto, file.getBytes());
@@ -130,9 +134,12 @@ public class ModelController {
         private String description;
         private String imageUrl;
         private String created_at;  // 改为String类型，以便自定义格式化
+        private Integer creatorId;
+        private String creatorName;
 
         public ModelListDto(Integer id, String name, String description, 
-                          String imageUrl, LocalDateTime createdAt) {
+                          String imageUrl, LocalDateTime createdAt,
+                          Integer creatorId, String creatorName) {
             this.id = id;
             this.name = name;
             this.description = description;
@@ -140,6 +147,8 @@ public class ModelController {
             // 格式化时间为ISO 8601格式
             this.created_at = createdAt != null ? 
                 createdAt.toString() : null;
+            this.creatorId = creatorId;
+            this.creatorName = creatorName;
         }
 
         // Getters
@@ -148,5 +157,7 @@ public class ModelController {
         public String getDescription() { return description; }
         public String getImageUrl() { return imageUrl; }
         public String getCreated_at() { return created_at; }
+        public Integer getCreatorId() { return creatorId; }
+        public String getCreatorName() { return creatorName; }
     }
 } 

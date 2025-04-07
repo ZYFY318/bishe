@@ -23,7 +23,10 @@ public interface IQuestionService {
     // 更新题目
     Question updateQuestion(Long id, QuestionDto questionDto);
 
-    Page getQuestionsByPage(Pageable pageable);
+    Page<Question> getQuestionsByPage(Pageable pageable);
 
     List<Question> getRandomQuestions(int num);
+    
+    // 根据关键词搜索题目
+    Page<Question> searchQuestions(String keyword, Pageable pageable);
 }

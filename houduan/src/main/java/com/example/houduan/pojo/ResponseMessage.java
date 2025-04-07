@@ -28,4 +28,9 @@ public class ResponseMessage<T> {
     public static <T> ResponseMessage<T> error(Integer code, String message, String errorMessage) {
         return new ResponseMessage<>(code, message, errorMessage, null);
     }
+    
+    // 简单错误响应，使用400状态码
+    public static <T> ResponseMessage<T> error(String errorMessage) {
+        return new ResponseMessage<>(HttpStatus.BAD_REQUEST.value(), "error", errorMessage, null);
+    }
 }

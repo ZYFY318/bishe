@@ -3,6 +3,7 @@ package com.example.houduan.controller;
 import com.example.houduan.pojo.ResponseMessage;
 import com.example.houduan.pojo.User;
 import com.example.houduan.pojo.dto.LoginRequestDto;
+import com.example.houduan.pojo.dto.RegisterRequestDto;
 import com.example.houduan.pojo.dto.UserDto;
 import com.example.houduan.pojo.dto.UserInfoDto;
 import com.example.houduan.service.IUserService;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @RestController //接口方法返回对象转换为json文本
 @RequestMapping("/user") //localhost:9090/user/**
+@CrossOrigin
 public class UserController {
     @Autowired
     IUserService userService;
@@ -61,6 +63,20 @@ public class UserController {
         // 3. 返回Token
         return ResponseMessage.success(Collections.singletonMap("token", token));
     }
+    
+    /**
+     * 用户注册
+     */
+    @PostMapping("/register")
+    public ResponseMessage<User> register(@Validated @RequestBody RegisterRequestDto registerRequest) {
+        try {
+            User user = userService.register(registerRequest);
+            return ResponseMessage.success(user, "注册成功");
+        } catch (Exception e) {
+            return ResponseMessage.error(e.getMessage());
+        }
+    }
+    
     @GetMapping("/info")
     public ResponseMessage<UserInfoDto> getUserInfo(@RequestHeader("token") String token) {
         // 1. 根据Token获取用户信息
@@ -70,6 +86,7 @@ public class UserController {
                 user.getUserId(),
                 user.getUsername(),
                 user.getAvatar(),
+                user.getUserType(),
                 user.getRoles(),
                 user.getButtons(),
                 user.getRoutes()

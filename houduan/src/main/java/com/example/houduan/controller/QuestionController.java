@@ -30,6 +30,20 @@ public class QuestionController {
         Page<Question> questionPage = questionService.getQuestionsByPage(pageable);
         return ResponseMessage.success(questionPage);
     }
+    
+    /**
+     * 搜索题目
+     */
+    @GetMapping("/search/{page}/{limit}")
+    public ResponseMessage<Page<Question>> searchQuestions(
+            @PathVariable int page,
+            @PathVariable int limit,
+            @RequestParam(required = false) String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        Page<Question> questionPage = questionService.searchQuestions(keyword, pageable);
+        return ResponseMessage.success(questionPage);
+    }
+    
     // 获取随机题目
     @GetMapping("/random/{num}")
     public ResponseMessage<List<Question>> getRandomQuestions(@PathVariable int num) {

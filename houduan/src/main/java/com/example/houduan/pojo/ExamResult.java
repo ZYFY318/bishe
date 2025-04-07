@@ -15,13 +15,16 @@ public class ExamResult {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) // 外键关联 tb_user 表
     private User user;
+    
+    @Column(name = "exam_id")
+    private Integer examId; // 关联的试卷ID
 
     private LocalDateTime examDate; // 考试日期
 
     private Integer score; // 成绩
 
     private Integer duration; // 用时（单位：秒）
-
-    private Integer examType; //1.小测试 2.中测试 3.大测试
-
+    
+    @Column(columnDefinition = "TEXT")
+    private String userAnswers; // 用户答案，JSON格式
 }

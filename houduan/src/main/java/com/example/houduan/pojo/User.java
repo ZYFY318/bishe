@@ -16,6 +16,12 @@ public class User {
     private String username;
     private String password;
     private String avatar;
+    
+    private String email;
+    
+    // 用户类型：TEACHER或STUDENT
+    @Column(name = "user_type")
+    private String userType;
 
     @ElementCollection // 存储集合字段（如roles、buttons）
     private List<String> roles;

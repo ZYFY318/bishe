@@ -14,12 +14,15 @@ public class ModelDto {
     private String fileName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer creatorId;
+    private String creatorName;
 
     public ModelDto() {
     }
 
     public ModelDto(Integer id, String name, String imageUrl, String description, 
-                   String fileName, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                   String fileName, LocalDateTime createdAt, LocalDateTime updatedAt,
+                   Integer creatorId, String creatorName) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -27,6 +30,8 @@ public class ModelDto {
         this.fileName = fileName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
     }
 
     public Integer getId() {
@@ -84,6 +89,22 @@ public class ModelDto {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
+    public Integer getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(Integer creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
 
     @Override
     public String toString() {
@@ -95,6 +116,8 @@ public class ModelDto {
                 ", fileName='" + fileName + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", creatorId=" + creatorId +
+                ", creatorName='" + creatorName + '\'' +
                 '}';
     }
 } 

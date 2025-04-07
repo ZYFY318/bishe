@@ -25,6 +25,12 @@ public class Model {
     
     private String fileName;  // 存储原始文件名
     
+    // 创建者ID
+    private Integer creatorId;
+    
+    // 创建者名称
+    private String creatorName;
+    
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
