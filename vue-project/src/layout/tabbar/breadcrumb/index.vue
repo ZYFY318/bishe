@@ -32,12 +32,25 @@ const changeIcon = () => {
 <style lang="scss">
 .breadcrumb-icon {
     font-size: 24px; /* 放大图标 */
-    color: black; /* 图标颜色改为黑色 */
+    color: var(--text-color); /* 使用主题颜色 */
+    transition: color 0.3s ease;
 }
 
 .breadcrumb-title {
     font-weight: bold; /* 加粗标题 */
     font-size: 18px; /* 放大标题 */
-    color: black; /* 标题颜色改为黑色 */
+    color: var(--text-color); /* 使用主题颜色 */
+    transition: color 0.3s ease;
+}
+
+/* 覆盖el-breadcrumb元素样式 */
+.el-breadcrumb__item .el-breadcrumb__inner {
+    color: var(--text-color) !important;
+    transition: color 0.3s ease !important;
+}
+
+.el-breadcrumb__separator {
+    color: var(--text-color) !important;
+    transition: color 0.3s ease !important;
 }
 </style>

@@ -9,8 +9,13 @@
             <!-- 滚动组件 -->
             <el-scrollbar class="scrollbar">
                 <!-- 根据路由动态生成路由 -->
-                <el-menu :collapse="LayOutSettingStore.fold" :default-active="$route.path" background-color='#22233b'
-                    text-color="white" active-text-color="#fa5252">
+                <el-menu 
+                    :collapse="LayOutSettingStore.fold" 
+                    :default-active="activeMenu" 
+                    :background-color="'var(--menu-bg)'"
+                    :text-color="'var(--menu-text)'" 
+                    :active-text-color="'var(--primary-color)'"
+                >
                     <Menu :menuList='userStore.menuRoutes'></Menu>
                 </el-menu>
             </el-scrollbar>
@@ -31,8 +36,8 @@
 </template>
 
 <script setup lang="ts">
-
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
 import Logo from './logo/index.vue'
 import Menu from './menu/index.vue'
 //获取用户相关的小仓库
@@ -40,10 +45,21 @@ import useUserStore from '@/stores/modules/user';
 import Main from './main/index.vue'
 import Tabbar from './tabbar/index.vue'
 import useLayOutSettingStore from '@/stores/modules/setting';
+
 const LayOutSettingStore = useLayOutSettingStore();
 //获取路由对象
-let $router = useRoute();
+const route = useRoute();
+const router = useRouter();
 const userStore = useUserStore();
+
+// 当前激活的菜单项
+const activeMenu = ref(route.path);
+
+// 监听路由变化
+watch(() => route.path, (newPath) => {
+  // 更新当前激活的菜单项
+  activeMenu.value = newPath;
+}, { immediate: true });
 </script>
 
 <style lang="scss" scoped>
@@ -54,14 +70,14 @@ const userStore = useUserStore();
     left: 0;
     width: 100%;
     height: 100vh;
-    background: url('../assets/images/p1.png') no-repeat center center;
+    background: var(--bg-color);
     background-size: cover;
 }
 
 .layout_slider {
     justify-content: center; /* 水平居中 */
     width: 18vw; // Set the width to 20% of the viewport width
-    background-color: #22233b;
+    background-color: var(--menu-bg);
     border-radius: 10px; /* Adjust the value for desired roundness */
     height: calc(100vh - 40px); /* Adjust the value for desired top and bottom spacing */
     margin: 20px 0 20px 20px; /* Adjust the values for desired spacing */

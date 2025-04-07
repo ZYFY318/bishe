@@ -1,0 +1,100 @@
+/* 自定义Element Plus暗色模式CSS变量 */
+html.dark {
+  /* 按钮相关变量 */
+  --el-color-primary: var(--primary-color);
+  --el-button-bg-color: var(--card-bg);
+  --el-button-text-color: var(--text-color);
+  --el-button-border-color: var(--border-color);
+  --el-button-hover-bg-color: rgba(64, 158, 255, 0.1);
+  --el-button-hover-text-color: var(--primary-color);
+  --el-button-hover-border-color: var(--primary-color);
+  --el-button-active-bg-color: rgba(64, 158, 255, 0.2);
+  --el-button-active-border-color: var(--primary-color);
+  
+  /* 对话框相关变量 */
+  --el-dialog-bg-color: var(--card-bg);
+  --el-dialog-border-color: var(--border-color);
+  --el-dialog-content-font-color: var(--text-color);
+  --el-dialog-title-font-color: var(--text-color);
+  
+  /* 输入框相关变量 */
+  --el-input-bg-color: var(--card-bg);
+  --el-input-border-color: var(--border-color);
+  --el-input-text-color: var(--text-color);
+  --el-input-hover-border-color: var(--primary-color);
+  
+  /* 表单相关变量 */
+  --el-fill-color-blank: var(--card-bg);
+  --el-text-color-regular: var(--text-color);
+  --el-border-color: var(--border-color);
+  --el-border-color-hover: var(--primary-color);
+  --el-border-color-light: var(--border-color);
+  
+  /* 下拉菜单 */
+  --el-dropdown-menuItem-hover-fill: rgba(64, 158, 255, 0.1);
+  --el-dropdown-menuItem-hover-color: var(--primary-color);
+}
+
+/* 修复普通按钮样式 */
+html.dark .el-button {
+  background-color: var(--el-button-bg-color) !important;
+  color: var(--el-button-text-color) !important;
+  border-color: var(--el-button-border-color) !important;
+}
+
+html.dark .el-button:hover {
+  background-color: var(--el-button-hover-bg-color) !important;
+  color: var(--el-button-hover-text-color) !important;
+  border-color: var(--el-button-hover-border-color) !important;
+}
+
+/* 修复确认按钮和主按钮样式 */
+html.dark .el-button--primary {
+  background-color: var(--el-color-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--el-color-primary) !important;
+}
+
+html.dark .el-button--primary:hover {
+  background-color: var(--el-color-primary-light-3) !important;
+  border-color: var(--el-color-primary-light-3) !important;
+}
+
+/* 修复对话框中的按钮样式 */
+html.dark .el-dialog .el-button {
+  background-color: var(--el-button-bg-color) !important;
+  color: var(--el-button-text-color) !important;
+  border-color: var(--el-button-border-color) !important;
+}
+
+html.dark .el-dialog .el-button:hover {
+  background-color: var(--el-button-hover-bg-color) !important;
+  color: var(--el-button-hover-text-color) !important;
+  border-color: var(--el-button-hover-border-color) !important;
+}
+
+html.dark .el-dialog .el-button--primary {
+  background-color: var(--el-color-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--el-color-primary) !important;
+}
+
+html.dark .el-dialog .el-button--primary:hover {
+  background-color: var(--el-color-primary-light-3) !important;
+  border-color: var(--el-color-primary-light-3) !important;
+}
+
+/* 确保输入框背景色正确 */
+html.dark .el-input__wrapper {
+  background-color: var(--card-bg) !important;
+}
+
+/* 下拉菜单样式 */
+html.dark .el-dropdown-menu {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark .el-dropdown-menu__item {
+  color: var(--text-color) !important;
+} 

@@ -9,6 +9,9 @@
         <p class="card-description">{{ props.modelItem.description }}</p>
         <div class="card-details">
           <p class="created-time"><el-icon><Calendar /></el-icon> {{ formatDate(props.modelItem.created_at) }}</p>
+          <p class="creator" v-if="props.modelItem.creatorName">
+            <el-icon><User /></el-icon> {{ props.modelItem.creatorName }}
+          </p>
         </div>
       </div>
     </div>
@@ -20,7 +23,7 @@ import { defineProps, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import type { PropType } from 'vue';
 import type { ModelItem } from '@/api/model/type';
-import { Calendar } from '@element-plus/icons-vue';
+import { Calendar, User } from '@element-plus/icons-vue';
 
 const router = useRouter();
 
@@ -59,6 +62,39 @@ const handleClick = () => {
 
 .model-card {
   // 特定于模型卡片的额外样式
-
+  .card-title {
+    color: var(--text-color);
+  }
+  
+  .card-details, .card-info p {
+    color: var(--text-color);
+    
+    .el-icon {
+      margin-right: 5px;
+    }
+  }
+  
+  .card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    
+    p {
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+    
+    .creator {
+      font-weight: 500;
+    }
+  }
+  
+  .card-description {
+    color: var(--text-color);
+    opacity: 0.8;
+    margin: 10px 0;
+  }
 }
 </style>

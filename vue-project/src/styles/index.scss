@@ -1,3 +1,6 @@
+@import './reset.scss';
+@import './variable.scss';
+
 // @import "./reset.scss";
 
 // 全局样式入口文件
@@ -49,6 +52,9 @@ html, body {
 }
 
 body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -91,4 +97,139 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+
+// 全局主题样式
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// 全局卡片样式
+.el-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--shadow) !important;
+  transition: all 0.3s ease;
+  
+  .el-card__header, .el-card__body {
+    color: var(--text-color) !important;
+  }
+  
+  // 确保卡片内的所有文本元素都使用主题颜色
+  p, span, div, h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+  }
+}
+
+// 全局菜单样式
+.el-menu {
+  background-color: var(--menu-bg) !important;
+  border-color: var(--border-color) !important;
+  
+  .el-menu-item, .el-sub-menu__title {
+    color: var(--menu-text) !important;
+    
+    &:hover {
+      background-color: rgba(64, 158, 255, 0.1) !important;
+    }
+  }
+}
+
+// 主要文本区域
+.layout_main {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+// 表格样式
+.el-table {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  
+  th.el-table__cell {
+    background-color: var(--menu-bg) !important;
+    color: var(--text-color) !important;
+  }
+  
+  tr {
+    background-color: var(--card-bg) !important;
+    
+    &:hover > td.el-table__cell {
+      background-color: rgba(64, 158, 255, 0.1) !important;
+    }
+  }
+  
+  td.el-table__cell, th.el-table__cell {
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+}
+
+// 表单样式
+.el-form-item__label {
+  color: var(--text-color) !important;
+}
+
+.el-input__inner, .el-textarea__inner {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+// 对话框样式
+.el-dialog {
+  background-color: var(--card-bg) !important;
+  
+  .el-dialog__title {
+    color: var(--text-color) !important;
+  }
+  
+  .el-dialog__body {
+    color: var(--text-color) !important;
+  }
+}
+
+// 切换主题时的过渡效果
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+// 响应式布局
+@media screen and (max-width: 1200px) {
+  .card-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .card-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .base-card .card-content {
+    flex-direction: column;
+    
+    .card-image {
+      width: 100%;
+      height: 120px;
+      margin-bottom: 10px;
+    }
+    
+    .card-info {
+      padding-left: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px;
+  }
 }

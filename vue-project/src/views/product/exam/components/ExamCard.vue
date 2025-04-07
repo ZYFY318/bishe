@@ -136,12 +136,20 @@ const handlePublish = async () => {
 </script>
 
 <style scoped lang="scss">
-
+@import '@/styles/card.scss';
 
 .exam-card {
   // 这里可以添加特定于ExamCard的额外样式
   .card-actions {
     justify-content: flex-end;
+  }
+  
+  .card-details, .card-info p {
+    color: var(--text-color);
+  }
+  
+  .card-title {
+    color: var(--text-color);
   }
 }
 </style> 

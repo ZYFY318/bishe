@@ -218,14 +218,15 @@ const handleClose = () => {
 
 .duration-unit {
   margin-left: 10px;
-  color: #909399;
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
 .cover-uploader {
   text-align: center;
   
   :deep(.el-upload) {
-    border: 1px dashed #d9d9d9;
+    border: 1px dashed var(--border-color);
     border-radius: 6px;
     cursor: pointer;
     position: relative;
@@ -233,14 +234,15 @@ const handleClose = () => {
     transition: border-color 0.3s;
     
     &:hover {
-      border-color: #409eff;
+      border-color: var(--primary-color);
     }
   }
 }
 
 .cover-uploader-icon {
   font-size: 28px;
-  color: #8c939d;
+  color: var(--text-color);
+  opacity: 0.5;
   width: 178px;
   height: 178px;
   text-align: center;
@@ -250,48 +252,95 @@ const handleClose = () => {
 }
 
 .cover-preview {
-  position: relative;
   width: 178px;
   height: 178px;
-}
-
-.cover-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.cover-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 8px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-bottom-left-radius: 6px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  position: relative;
+  overflow: hidden;
   
-  .cover-preview:hover & {
-    opacity: 1;
+  .cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   
-  .el-icon {
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
+  .cover-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+    
+    .el-icon {
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+    }
     
     &:hover {
-      color: #f56c6c;
+      opacity: 1;
     }
   }
 }
 
-.el-upload__tip {
-  font-size: 12px;
-  color: #909399;
-  margin-top: 10px;
+:deep(.el-dialog) {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  
+  .el-dialog__title {
+    color: var(--text-color);
+  }
+  
+  .el-dialog__body {
+    color: var(--text-color);
+  }
+  
+  .el-form-item__label {
+    color: var(--text-color);
+  }
+  
+  .el-input__inner {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+  }
+  
+  .el-textarea__inner {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+  }
+  
+  .el-input-number {
+    .el-input__wrapper {
+      background-color: var(--card-bg);
+      
+      .el-input__inner {
+        color: var(--text-color);
+      }
+    }
+    
+    .el-input-number__decrease,
+    .el-input-number__increase {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-color: var(--border-color);
+      
+      &:hover {
+        color: var(--primary-color);
+      }
+    }
+  }
+  
+  .el-upload__tip {
+    color: var(--text-color);
+    opacity: 0.8;
+  }
 }
-
-
-
 </style> 

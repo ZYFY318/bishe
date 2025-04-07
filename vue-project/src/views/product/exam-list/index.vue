@@ -192,12 +192,20 @@ onMounted(async () => {
       margin: 0;
       font-size: 20px;
       font-weight: 300;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--text-color);
       
       .el-icon {
         margin-right: 5px;
       }
     }
+  }
+  
+  .card-title {
+    color: var(--text-color);
+  }
+  
+  .card-details, .card-info p {
+    color: var(--text-color);
   }
 }
 </style> 

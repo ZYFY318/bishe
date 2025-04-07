@@ -13,10 +13,11 @@ import setting from '@/setting';
 .logo {
     width: 100%;
     height: $base-menu-logo-height;
-    color: white;
+    color: var(--menu-text);
     display: flex;
     align-items: center;
     padding: 8px;
+    transition: all 0.3s ease;
 
     img {
         width: 40px;
@@ -26,6 +27,9 @@ import setting from '@/setting';
 
     p {
         font-size: $base-menu-logo-title-fontSize;
+        color: var(--menu-text);
+        font-weight: 600;
+        margin: 0;
     }
 }
 </style>

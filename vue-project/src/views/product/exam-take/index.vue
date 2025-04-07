@@ -59,8 +59,8 @@
                   :key="optIndex" 
                   class="option-item"
                   :class="{
-                    'correct-option': isCompleted && optIndex === Number(question.answer),
-                    'incorrect-option': isCompleted && answers[String(question.id)] === optIndex && optIndex !== Number(question.answer)
+                    'correct-option': isCompleted && option === question.answer,
+                    'incorrect-option': isCompleted && answers[String(question.id)] === optIndex && option !== question.answer
                   }"
                 >
                   <el-radio :label="optIndex">
@@ -74,7 +74,7 @@
                 您的答案: {{ question.options[answers[String(question.id)]] }}
               </div>
               <div class="correct-answer">
-                正确答案: {{ question.options[Number(question.answer)] }}
+                正确答案: {{ question.answer}}
               </div>
             </div>
           </el-card>
@@ -286,12 +286,12 @@ const calculateCorrectAnswers = (questions: QuestionItem[], answers: Record<stri
     
     // 只有当用户已选择答案时才进行比较
     if (selectedIndex !== undefined) {
-      // 将用户选择的选项索引转换为选项内容
+      // 获取用户选择的选项内容
       const userAnswer = question.options[selectedIndex];
       // 获取正确答案的选项内容
       const correctAnswer = question.answer;
-      console.log(userAnswer, correctAnswer)
-      // 比较用户选择的选项内容和正确答案的选项内容
+      
+      // 比较用户选择的选项内容和正确答案
       if (userAnswer === correctAnswer) {
         count++;
       }
@@ -450,7 +450,8 @@ const isAnswerCorrect = (index: number) => {
   
   if (selectedIndex === undefined) return false;
   
-  return selectedIndex === Number(question.answer);
+  // 比较选择的选项内容和正确答案
+  return question.options[selectedIndex] === question.answer;
 };
 
 // 提交考试
@@ -870,7 +871,7 @@ onBeforeUnmount(() => {
           }
           
           .user-answer {
-            color: #909399;
+            color: #e9ecf1;
           }
           
           .correct-answer {

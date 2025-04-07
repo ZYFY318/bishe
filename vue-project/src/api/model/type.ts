@@ -5,6 +5,8 @@ export interface ModelItem {
   description: string;
   created_at: string;
   imageUrl?: string;
+  creatorId?: number;
+  creatorName?: string;
 }
 
 // 模型列表的响应数据接口
@@ -32,6 +34,7 @@ export interface ModelUploadData {
   description: string;
   file: File;
   image?: File;
+  creatorId?: number;
 }
 
 // 模型上传响应

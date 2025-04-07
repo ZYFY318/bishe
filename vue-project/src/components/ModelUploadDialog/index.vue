@@ -62,6 +62,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import { uploadModel } from '@/api/model';
 import type { ModelUploadData } from '@/api/model/type';
+import useUserStore from '@/stores/modules/user';
 
 const props = defineProps({
   visible: {
@@ -145,19 +146,25 @@ const handleUpload = async () => {
     if (valid && form.file) {
       uploading.value = true;
       try {
-        const uploadData: ModelUploadData = {
-          name: form.name,
-          description: form.description,
-          file: form.file
-        };
+        // 获取用户信息
+        const userStore = useUserStore();
         
-        const res = await uploadModel(uploadData);
+        // 创建FormData对象来处理文件上传
+        const formData = new FormData();
+        formData.append('file', form.file);
+        formData.append('name', form.name);
+        formData.append('description', form.description);
+        formData.append('creatorId', userStore.userId.toString());
+        
+        // 调用上传API
+        const res = await uploadModel(formData);
+        
         if (res.code === 200) {
           ElMessage.success('模型上传成功');
           emit('uploaded');
           handleClose();
         } else {
-          ElMessage.error(res.data.message || '上传失败');
+          ElMessage.error('上传失败');
         }
       } catch (error) {
         console.error('上传模型失败:', error);
@@ -180,7 +187,7 @@ const handleClose = () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
@@ -191,5 +198,59 @@ const handleClose = () => {
   width: 100%;
 }
 
-
+:deep(.el-dialog) {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  
+  .el-dialog__title {
+    color: var(--text-color);
+  }
+  
+  .el-dialog__body {
+    color: var(--text-color);
+  }
+  
+  .el-form-item__label {
+    color: var(--text-color);
+  }
+  
+  .el-input__inner {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+  }
+  
+  .el-textarea__inner {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+  }
+  
+  .el-upload {
+    border-color: var(--border-color);
+    color: var(--text-color);
+    
+    &:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .el-icon--upload {
+      color: var(--text-color);
+    }
+    
+    .el-upload__text {
+      color: var(--text-color);
+      
+      em {
+        color: var(--primary-color);
+      }
+    }
+    
+    .el-upload__tip {
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+  }
+}
 </style> 

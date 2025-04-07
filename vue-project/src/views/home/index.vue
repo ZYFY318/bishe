@@ -16,6 +16,8 @@
   import { ref, onMounted } from 'vue';
   import type { ModelItem } from '@/api/model/type';
   import { reqModelList } from '@/api/model';
+  import ItemCard from '@/components/ItemCard/index.vue';
+  import AddModelCard from '@/components/AddModelCard/index.vue';
   
   // 定义一个响应式变量来存储从后端获取的数据
   const items = ref<ModelItem[]>([]);
@@ -47,11 +49,5 @@
   </script>
   
   <style scoped lang="scss">
-  .card-container {
-    display: flex;
-    flex-wrap: wrap; // 允许卡片换行
-    gap: 20px; // 卡片之间的间距
-    padding: 10px; // 容器内边距
-    justify-content: flex-start; // 从左向右排列
-  }
+ 
   </style>

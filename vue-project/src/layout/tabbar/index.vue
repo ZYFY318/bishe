@@ -18,7 +18,10 @@ import Setting from './setting/index.vue';
     height: 100%;
     display: flex;
     justify-content: space-between;
-    // background-image: linear-gradient(to right, white, rgb(239, 216, 216), white);
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
 
     .tabbar_left,
     .tabbar_right {
@@ -33,6 +36,7 @@ import Setting from './setting/index.vue';
 
     .tabbar_right {
         justify-content: flex-end;
+        padding-right: 20px;
     }
 }
 </style>

@@ -85,13 +85,38 @@ export default {
 </script>
 <style lang="scss">
 .el-menu {
+    background-color: var(--menu-bg) !important;
+    border-right: none;
+    
     .el-menu-item {
         height: 60px;
         line-height: 60px;
+        color: var(--menu-text) !important;
+        
+        &.is-active {
+            background-color: rgba(64, 158, 255, 0.2) !important;
+            color: var(--primary-color) !important;
+            
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 15px;
+                bottom: 15px;
+                width: 3px;
+                background-color: var(--primary-color);
+                border-radius: 0 3px 3px 0;
+            }
+        }
+        
+        &:hover {
+            background-color: rgba(64, 158, 255, 0.1) !important;
+        }
         
         .el-icon {
             font-size: 18px;
             margin-right: 8px;
+            color: var(--menu-text);
         }
     }
 
@@ -99,16 +124,22 @@ export default {
         .el-sub-menu__title {
             height: 60px;
             line-height: 60px;
+            color: var(--menu-text) !important;
+            
+            &:hover {
+                background-color: rgba(64, 158, 255, 0.1) !important;
+            }
 
             .el-icon {
                 font-size: 18px;
                 margin-right: 8px;
+                color: var(--menu-text);
             }
         }
     }
 }
 
 .sub-menu {
-    background-color: #1f2d3d;
+    background-color: var(--menu-bg) !important;
 }
 </style>

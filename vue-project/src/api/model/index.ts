@@ -22,11 +22,27 @@ export const reqModelData = (id: number) =>
   request.get<any, Blob>(`${API.GET_MODEL_DATA}/${id}`);
 
 // 上传模型
-export const uploadModel = (data: ModelUploadData) => {
-  const formData = new FormData();
-  formData.append('name', data.name);
-  formData.append('description', data.description);
-  formData.append('file', data.file);
+export const uploadModel = (data: ModelUploadData | FormData) => {
+  let formData: FormData;
+  
+  if (!(data instanceof FormData)) {
+    // 如果是ModelUploadData类型，转换为FormData
+    formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('description', data.description || '');
+    formData.append('file', data.file);
+    
+    // 可选字段
+    if (data.creatorId !== undefined) {
+      formData.append('creatorId', data.creatorId.toString());
+    }
+    if (data.image) {
+      formData.append('image', data.image);
+    }
+  } else {
+    // 如果已经是FormData，直接使用
+    formData = data;
+  }
   
   return request.post<any, ModelUploadResponse>(API.UPLOAD_MODEL, formData, {
     headers: {
