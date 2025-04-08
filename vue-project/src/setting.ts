@@ -1,7 +1,7 @@
 //用于项目logo标题配置
 
 export default {
-  title: "涩涩猫猫苏打",
-  logo: "/public/hakasei.png",
+  title: "FTP",
+  logo: "/public/fire2.png",
   logoIsHidden: false,
 };

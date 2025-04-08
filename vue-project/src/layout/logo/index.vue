@@ -30,6 +30,7 @@ import setting from '@/setting';
         color: var(--menu-text);
         font-weight: 600;
         margin: 0;
+        letter-spacing: 2px;
     }
 }
 </style>

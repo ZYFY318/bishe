@@ -1,8 +1,8 @@
 <template>
     
-    <el-button type="primary" size="small" icon="Refresh" circle @click="update"></el-button>
-    <el-button type="primary" size="small" icon="FullScreen" circle @click="fullScreen"></el-button>
-    <el-button type="primary" size="small" icon="Setting" circle></el-button>
+    <el-button size="small" icon="Refresh" circle @click="update"></el-button>
+    <el-button size="small" icon="FullScreen" circle @click="fullScreen"></el-button>
+    <el-button size="small" icon="Setting" circle></el-button>
     
     <!-- 主题切换开关 -->
     <el-tooltip
@@ -13,10 +13,8 @@
         <el-switch
           v-model="isDarkTheme"
           inline-prompt
-          active-color="#409eff"
-          inactive-color="#f0c78a"
-          :active-icon="Moon"
-          :inactive-icon="Sunny"
+          :active-action-icon="Moon"
+          :inactive-action-icon="Sunny"
           @change="changeTheme"
         />
       </div>

@@ -126,18 +126,20 @@ const colors = [
   gap: 20px;
   margin-bottom: 0;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
 
   .el-button {
     padding: 0;
-    font-size: 20px; /* 调整图标大小 */
+    font-size: 20px;
+    color: var(--text-color);
   }
-
 }
 
 .model-title {
   margin: 0;
   font-size: 24px;
+  color: var(--text-color);
 }
 
 .main-content {
@@ -147,7 +149,7 @@ const colors = [
   padding: 20px;
   height: calc(100vh - 80px);
   overflow: hidden;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
 }
 
 .edit_container {
@@ -160,12 +162,17 @@ const colors = [
 
 .edit-card {
   padding: 15px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
 }
 
 .edit-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  color: var(--text-color);
 
   &.reset-item {
     flex-direction: row;
@@ -175,7 +182,7 @@ const colors = [
     padding: 5px 0;
     
     &:hover {
-      color: #409EFF;
+      color: var(--primary-color);
       .el-icon {
         transform: rotate(180deg);
       }
@@ -190,12 +197,14 @@ const colors = [
 
 .model-container {
   flex: 1;
-  background-color: white;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  box-shadow: var(--shadow);
 }
 
 </style>

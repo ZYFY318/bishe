@@ -11,6 +11,10 @@ html.dark {
   --el-button-active-bg-color: rgba(64, 158, 255, 0.2);
   --el-button-active-border-color: var(--primary-color);
   
+  /* Switch组件相关变量 */
+  --el-switch-on-color: transparent;
+  --el-switch-off-color: transparent;
+  
   /* 对话框相关变量 */
   --el-dialog-bg-color: var(--card-bg);
   --el-dialog-border-color: var(--border-color);
@@ -50,14 +54,15 @@ html.dark .el-button:hover {
 
 /* 修复确认按钮和主按钮样式 */
 html.dark .el-button--primary {
-  background-color: var(--el-color-primary) !important;
-  color: #ffffff !important;
-  border-color: var(--el-color-primary) !important;
+  background-color: transparent !important;
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 html.dark .el-button--primary:hover {
-  background-color: var(--el-color-primary-light-3) !important;
-  border-color: var(--el-color-primary-light-3) !important;
+  background-color: rgba(64, 158, 255, 0.1) !important;
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 /* 修复对话框中的按钮样式 */
@@ -74,14 +79,15 @@ html.dark .el-dialog .el-button:hover {
 }
 
 html.dark .el-dialog .el-button--primary {
-  background-color: var(--el-color-primary) !important;
-  color: #ffffff !important;
-  border-color: var(--el-color-primary) !important;
+  background-color: transparent !important;
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 html.dark .el-dialog .el-button--primary:hover {
-  background-color: var(--el-color-primary-light-3) !important;
-  border-color: var(--el-color-primary-light-3) !important;
+  background-color: rgba(64, 158, 255, 0.1) !important;
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 /* 确保输入框背景色正确 */
@@ -97,4 +103,23 @@ html.dark .el-dropdown-menu {
 
 html.dark .el-dropdown-menu__item {
   color: var(--text-color) !important;
+}
+
+/* Switch开关样式 */
+html.dark .el-switch.is-checked .el-switch__core {
+  background-color: transparent !important;
+  border-color: var(--primary-color) !important;
+}
+
+html.dark .el-switch .el-switch__core {
+  background-color: transparent !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dark .el-switch__core .el-switch__action {
+  background-color: var(--text-color) !important;
+}
+
+html.dark .el-switch.is-checked .el-switch__core .el-switch__action {
+  background-color: var(--primary-color) !important;
 } 

@@ -128,6 +128,7 @@ const handleLogout = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+//   background-color: transparent;
 }
 
 .profile-header {
@@ -163,7 +164,8 @@ const handleLogout = () => {
   margin-bottom: 20px;
   border-radius: 8px;
   box-shadow: var(--shadow);
-  background-color: var(--card-bg);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
   
   .card-header {
     display: flex;
@@ -221,8 +223,9 @@ const handleLogout = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg-color);
+  background-color: transparent;
   color: var(--text-color-secondary);
   font-size: 16px;
+  border: 1px dashed var(--border-color);
 }
 </style>

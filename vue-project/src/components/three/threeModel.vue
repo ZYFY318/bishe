@@ -21,11 +21,12 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, watch } from 'vue'
+  import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
   import * as THREE from 'three'
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
   import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
   import { reqModelData } from '@/api/model'
+  import useLayOutSettingStore from '@/stores/modules/setting'
   
   const props = defineProps({
     modelId: {
@@ -55,6 +56,13 @@
   // 添加加载状态和进度
   const loading = ref(true);
   const loadingProgress = ref(0);
+
+  // 获取主题设置
+  const layoutSettingStore = useLayOutSettingStore()
+  // 根据当前主题计算背景颜色
+  const sceneBackgroundColor = computed(() => {
+    return layoutSettingStore.theme === 'dark' ? 0x1e1e2e : 0xffffff
+  })
 
   // 监听 scale 变化
   watch(() => props.scale, (newScale) => {
@@ -175,7 +183,9 @@
     const container = canvasContainer.value;
     // 创建场景
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
+    
+    // 根据主题设置背景颜色
+    scene.background = new THREE.Color(sceneBackgroundColor.value);
 
     // 获取容器的尺寸
     const containerWidth = container.clientWidth;
@@ -256,6 +266,13 @@
     const axesHelper = new THREE.AxesHelper(5);
     // scene.add(axesHelper);
   })
+
+  // 监听主题变化，更新场景背景颜色
+  watch(() => layoutSettingStore.theme, (newTheme) => {
+    if (scene) {
+      scene.background = new THREE.Color(sceneBackgroundColor.value);
+    }
+  })
   </script>
   
   <style scoped>
@@ -277,14 +294,16 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    /* background: rgba(255, 255, 255, 0.9); */
     padding: 20px;
-    /* border-radius: 8px; */
-    /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
   }
 
   .progress-text {
     font-size: 14px;
-    color: #606266;
+    color: var(--text-color); /* 使用主题变量替代固定颜色 */
+  }
+
+  /* 自定义深色主题下的进度条颜色 */
+  :deep(.el-progress__text) {
+    color: var(--text-color) !important;
   }
   </style>

@@ -216,12 +216,12 @@ export const constantRoute = [
     },
   },
   {
-    path: "/product/sku",
-    component: () => import("@/views/product/sku/index.vue"),
-    name: "Sku",
+    path: "/product/game",
+    component: () => import("@/views/product/game/index.vue"),
+    name: "Game",
     meta: {
       hidden: false,
-      title: "测试",
+      title: "3D模拟游戏",
       icon: "Orange",
       roles: ["STUDENT"],
     },

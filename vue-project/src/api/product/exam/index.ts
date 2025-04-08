@@ -20,7 +20,8 @@ enum API {
   UPDATE_EXAM = "/exams",
   GET_EXAM_QUESTIONS = "/exams/questions",
   ADD_QUESTIONS_TO_EXAM = "/exams/questions",
-  PUBLISH_EXAM = "/exams/publish"
+  PUBLISH_EXAM = "/exams/publish",
+  DELETE_EXAM = "/exams"
 }
 
 // 获取试卷列表
@@ -86,4 +87,8 @@ export const publishExam = (examId: number, published: boolean = true) =>
 
 // 获取已发布的试卷（适用于学生）
 export const fetchPublishedExams = () =>
-  request.get<any, ExamListResponse>(API.GET_PUBLISHED_EXAMS); 
+  request.get<any, ExamListResponse>(API.GET_PUBLISHED_EXAMS);
+
+// 删除试卷
+export const deleteExam = (examId: number) =>
+  request.delete<any, ExamResponse>(`${API.DELETE_EXAM}/${examId}`); 

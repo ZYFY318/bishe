@@ -1,5 +1,5 @@
 <template>
-  <el-card class="base-card exam-card">
+  <el-card class="base-card exam-card" :class="{ 'is-dragging': isDragging }" @dragstart="handleDragStart" @dragend="handleDragEnd">
     <div class="card-content">
       <div class="card-image" @click="goToExam">
         <img :src="getImgUrl(exam.coverUrl)" alt="试卷封面" />
@@ -58,6 +58,19 @@ const publishing = ref(false);
 
 // 计算属性：是否已发布
 const isPublished = computed(() => !!props.exam.published);
+
+// 拖拽状态
+const isDragging = ref(false);
+
+// 拖拽开始
+const handleDragStart = () => {
+  isDragging.value = true;
+};
+
+// 拖拽结束
+const handleDragEnd = () => {
+  isDragging.value = false;
+};
 
 // 获取完整的图片URL
 const getImgUrl = (url: string) => {
@@ -150,6 +163,12 @@ const handlePublish = async () => {
   
   .card-title {
     color: var(--text-color);
+  }
+  
+  &.is-dragging {
+    opacity: 0.7;
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   }
 }
 </style> 
