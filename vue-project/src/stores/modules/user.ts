@@ -56,9 +56,16 @@ let useUserStore = defineStore("User", {
       this.token = "";
       this.username = "";
       this.avatar = "";
+      this.userId = 0;
       this.userType = "";
-      await reqLogout();
+      try {
+        await reqLogout();
+      } catch (error) {
+        console.error("登出请求失败:", error);
+      }
       REMOVE_TOKEN();
+      // 重置所有相关状态
+      this.$reset();
     },
   },
   getters: {},

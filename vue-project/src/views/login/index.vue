@@ -66,8 +66,8 @@ const login = async () => {
     try {
         //保证登陆成功
         await useStore.userLogin(loginForm);
-        const redirect: any = $route.query.redirect;
-        $router.push({ path: redirect || '/' })
+        // 不再使用redirect参数，直接跳转到主页
+        $router.push({ path: '/' });
         //登陆成功提示信息
         ElNotification({
             type: 'success',
@@ -82,8 +82,6 @@ const login = async () => {
             message: (error as Error).message
         })
     }
-
-
 }
 //自定义校验规则函数
 const validatorUserName = (rule: any, value: string, callback: Function) => {

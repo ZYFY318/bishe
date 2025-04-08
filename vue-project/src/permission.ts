@@ -42,7 +42,8 @@ router.beforeEach(async (to, from, next) => {
     if (whiteList.includes(to.path)) {
       next();
     } else {
-      next({ path: "/login", query: { redirect: to.path } });
+      // 不再传递redirect参数，直接跳转到登录页
+      next({ path: "/login" });
     }
   }
 });

@@ -77,8 +77,8 @@ const logout = () => {
 
     //2.仓库关于用户相关数据得清空掉
     userStore.userLogout();
-    //3.跳转到登陆页面  
-    $router.push({ path: '/login', query: { redirect: $route.path } })
+    //3.跳转到登陆页面 - 删除redirect参数，直接跳转到登录页  
+    $router.push({ path: '/login' })
 }
 </script>
 <style lang="scss" scoped>

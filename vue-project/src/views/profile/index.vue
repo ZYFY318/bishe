@@ -111,7 +111,7 @@ const handleLogout = () => {
   }).then(async () => {
     // 清除用户信息
     await userStore.userLogout();
-    // 跳转到登录页
+    // 跳转到登录页，不带任何参数
     router.push('/login');
   }).catch(() => {
     // 用户取消操作
