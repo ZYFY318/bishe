@@ -2,15 +2,13 @@ package com.example.houduan.controller;
 
 import com.example.houduan.pojo.ResponseMessage;
 import com.example.houduan.pojo.User;
-import com.example.houduan.pojo.dto.LoginRequestDto;
-import com.example.houduan.pojo.dto.RegisterRequestDto;
-import com.example.houduan.pojo.dto.UserDto;
-import com.example.houduan.pojo.dto.UserInfoDto;
+import com.example.houduan.pojo.dto.*;
 import com.example.houduan.service.IUserService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.Map;
@@ -41,6 +39,35 @@ public class UserController {
     public ResponseMessage<User> edit(@Validated @RequestBody UserDto user) {
         User userNew = userService.editUser(user);
         return ResponseMessage.success(userNew);
+    }
+    
+    /**
+     * 用户信息更新（不含密码）
+     * 用于个人中心更新个人信息
+     */
+    @PostMapping("/update")
+    public ResponseMessage<User> updateUser(@Validated @RequestBody UserUpdateDto userUpdateDto) {
+        User updatedUser = userService.updateUserInfo(userUpdateDto);
+        return ResponseMessage.success(updatedUser, "用户信息更新成功");
+    }
+    
+    /**
+     * 文件上传接口 - 处理带有头像图片的用户信息更新
+     */
+    @PostMapping("/update/avatar")
+    public ResponseMessage<User> updateUserWithAvatar(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Integer userId,
+            @RequestParam("avatar") MultipartFile avatarFile) {
+        
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setUsername(username);
+        userUpdateDto.setEmail(email);
+        userUpdateDto.setUserId(userId);
+        
+        User updatedUser = userService.updateUserWithAvatar(userUpdateDto, avatarFile);
+        return ResponseMessage.success(updatedUser, "用户信息及头像更新成功");
     }
 
     //delete
@@ -87,9 +114,11 @@ public class UserController {
                 user.getUsername(),
                 user.getAvatar(),
                 user.getUserType(),
+                user.getEmail(),
                 user.getRoles(),
                 user.getButtons(),
                 user.getRoutes()
+
         );
 
         return ResponseMessage.success(userInfo);

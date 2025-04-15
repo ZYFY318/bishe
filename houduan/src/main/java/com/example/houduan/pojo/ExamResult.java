@@ -12,9 +12,8 @@ public class ExamResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // 外键关联 tb_user 表
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId; // 用户ID
     
     @Column(name = "exam_id")
     private Integer examId; // 关联的试卷ID

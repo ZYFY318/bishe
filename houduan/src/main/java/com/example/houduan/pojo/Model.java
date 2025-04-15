@@ -16,7 +16,9 @@ public class Model {
     private Integer id;
     
     private String name;
-    private String imageUrl;
+
+    private String coverUrl;
+    
     private String description;
     
     @Lob

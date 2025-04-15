@@ -36,7 +36,7 @@ public class ModelController {
                         model.getId(),
                         model.getName(),
                         model.getDescription(),
-                        model.getImageUrl(),
+                        model.getCoverUrl(),
                         model.getCreatedAt(),
                         model.getCreatorId(),
                         model.getCreatorName()))
@@ -74,19 +74,21 @@ public class ModelController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "imageUrl", required = false) String imageUrl,
-            @RequestParam(value = "creatorId", required = false) Integer creatorId) throws IOException {
+            @RequestParam(value = "creatorId", required = false) Integer creatorId,
+            @RequestParam(value = "cover", required = false) MultipartFile cover) throws IOException {
         
         // 创建ModelDto对象
         ModelDto modelDto = new ModelDto();
         modelDto.setName(name);
         modelDto.setDescription(description);
-        modelDto.setImageUrl(imageUrl);
         modelDto.setFileName(file.getOriginalFilename());
         modelDto.setCreatorId(creatorId);
         
-        // 保存模型信息
-        Model newModel = modelService.addModel(modelDto, file.getBytes());
+        // 打印creatorId用于调试
+        System.out.println("Received creatorId: " + creatorId);
+        
+        // 保存模型信息和封面图片
+        Model newModel = modelService.addModel(modelDto, file.getBytes(), cover);
         return ResponseMessage.success(newModel);
     }
 
@@ -99,22 +101,21 @@ public class ModelController {
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam("name") String name,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "imageUrl", required = false) String imageUrl) throws IOException {
+            @RequestParam(value = "cover", required = false) MultipartFile cover) throws IOException {
         
         // 创建ModelDto对象
         ModelDto modelDto = new ModelDto();
         modelDto.setId(id);
         modelDto.setName(name);
         modelDto.setDescription(description);
-        modelDto.setImageUrl(imageUrl);
         
         // 如果有新文件，更新文件名
         if (file != null && !file.isEmpty()) {
             modelDto.setFileName(file.getOriginalFilename());
         }
         
-        // 更新模型信息
-        Model updatedModel = modelService.updateModel(modelDto, file != null ? file.getBytes() : null);
+        // 更新模型信息和封面图片
+        Model updatedModel = modelService.updateModel(modelDto, file != null ? file.getBytes() : null, cover);
         return ResponseMessage.success(updatedModel);
     }
 
@@ -132,18 +133,18 @@ public class ModelController {
         private Integer id;
         private String name;
         private String description;
-        private String imageUrl;
+        private String coverUrl;
         private String created_at;  // 改为String类型，以便自定义格式化
         private Integer creatorId;
         private String creatorName;
 
         public ModelListDto(Integer id, String name, String description, 
-                          String imageUrl, LocalDateTime createdAt,
+                          String coverUrl, LocalDateTime createdAt,
                           Integer creatorId, String creatorName) {
             this.id = id;
             this.name = name;
             this.description = description;
-            this.imageUrl = imageUrl;
+            this.coverUrl = coverUrl;
             // 格式化时间为ISO 8601格式
             this.created_at = createdAt != null ? 
                 createdAt.toString() : null;
@@ -155,9 +156,28 @@ public class ModelController {
         public Integer getId() { return id; }
         public String getName() { return name; }
         public String getDescription() { return description; }
-        public String getImageUrl() { return imageUrl; }
+        public String getCoverUrl() { return coverUrl; }
         public String getCreated_at() { return created_at; }
         public Integer getCreatorId() { return creatorId; }
         public String getCreatorName() { return creatorName; }
+    }
+
+    /**
+     * 根据创建者ID获取模型列表
+     */
+    @GetMapping("/user/{creatorId}")
+    public ResponseMessage<List<ModelListDto>> getModelsByCreatorId(@PathVariable Integer creatorId) {
+        List<Model> models = modelService.getModelsByCreatorId(creatorId);
+        List<ModelListDto> modelListDtos = models.stream()
+                .map(model -> new ModelListDto(
+                        model.getId(),
+                        model.getName(),
+                        model.getDescription(),
+                        model.getCoverUrl(),
+                        model.getCreatedAt(),
+                        model.getCreatorId(),
+                        model.getCreatorName()))
+                .toList();
+        return ResponseMessage.success(modelListDtos);
     }
 } 

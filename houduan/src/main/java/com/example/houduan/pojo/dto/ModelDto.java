@@ -9,7 +9,7 @@ public class ModelDto {
     @NotBlank(message = "模型名称不能为空")
     private String name;
     
-    private String imageUrl;
+    private String coverUrl;
     private String description;
     private String fileName;
     private LocalDateTime createdAt;
@@ -20,12 +20,12 @@ public class ModelDto {
     public ModelDto() {
     }
 
-    public ModelDto(Integer id, String name, String imageUrl, String description, 
+    public ModelDto(Integer id, String name, String coverUrl, String description, 
                    String fileName, LocalDateTime createdAt, LocalDateTime updatedAt,
                    Integer creatorId, String creatorName) {
         this.id = id;
         this.name = name;
-        this.imageUrl = imageUrl;
+        this.coverUrl = coverUrl;
         this.description = description;
         this.fileName = fileName;
         this.createdAt = createdAt;
@@ -50,12 +50,12 @@ public class ModelDto {
         this.name = name;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getCoverUrl() {
+        return coverUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 
     public String getDescription() {
@@ -111,7 +111,7 @@ public class ModelDto {
         return "ModelDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
+                ", coverUrl='" + coverUrl + '\'' +
                 ", description='" + description + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", createdAt=" + createdAt +

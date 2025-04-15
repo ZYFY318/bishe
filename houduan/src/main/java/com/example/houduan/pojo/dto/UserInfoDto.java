@@ -12,6 +12,7 @@ public class UserInfoDto {
     private String username;
     private String avatar;
     private String userType;
+    private String email;
     private List<String> roles;
     private List<String> buttons;
     private List<String> routes;

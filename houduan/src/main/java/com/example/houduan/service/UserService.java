@@ -1,9 +1,11 @@
 package com.example.houduan.service;
 
+import com.example.houduan.config.FileStorageConfig;
 import com.example.houduan.pojo.User;
 import com.example.houduan.pojo.UserType;
 import com.example.houduan.pojo.dto.RegisterRequestDto;
 import com.example.houduan.pojo.dto.UserDto;
+import com.example.houduan.pojo.dto.UserUpdateDto;
 import com.example.houduan.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -13,16 +15,25 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.SecretKey;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static javax.crypto.Cipher.SECRET_KEY;
 
@@ -31,9 +42,17 @@ public class UserService implements IUserService{
 
     @Autowired
     UserRepository userRepository;
+    
     @Autowired
     private PasswordEncoder passwordEncoder;
-     @Override
+    
+    @Autowired
+    private FileStorageConfig fileStorageConfig;
+    
+    @Value("${file.upload-dir:./uploads/avatars}")
+    private String uploadDir;
+    
+    @Override
     public User add(UserDto user) {
          User userPojo = new User();
          BeanUtils.copyProperties(user, userPojo);
@@ -54,6 +73,54 @@ public class UserService implements IUserService{
          User userPojo = new User();
          BeanUtils.copyProperties(user, userPojo);
          return userRepository.save(userPojo);
+    }
+    
+    @Override
+    public User updateUserInfo(UserUpdateDto userUpdateDto) {
+        // 1. 查找现有用户
+        User existingUser = userRepository.findById(userUpdateDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+        
+        // 2. 更新用户信息（只更新非空值）
+        if (StringUtils.hasText(userUpdateDto.getUsername())) {
+            existingUser.setUsername(userUpdateDto.getUsername());
+        }
+        
+        if (StringUtils.hasText(userUpdateDto.getEmail())) {
+            existingUser.setEmail(userUpdateDto.getEmail());
+        }
+        
+        if (StringUtils.hasText(userUpdateDto.getAvatar())) {
+            existingUser.setAvatar(userUpdateDto.getAvatar());
+        }
+        
+        // 3. 保存并返回更新后的用户
+        return userRepository.save(existingUser);
+    }
+    
+    @Override
+    public User updateUserWithAvatar(UserUpdateDto userUpdateDto, MultipartFile avatarFile) {
+        // 1. 查找现有用户
+        User existingUser = userRepository.findById(userUpdateDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+        
+        // 2. 更新用户信息（只更新非空值）
+        if (StringUtils.hasText(userUpdateDto.getUsername())) {
+            existingUser.setUsername(userUpdateDto.getUsername());
+        }
+        
+        if (StringUtils.hasText(userUpdateDto.getEmail())) {
+            existingUser.setEmail(userUpdateDto.getEmail());
+        }
+        
+        // 3. 处理头像上传
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            String avatarUrl = fileStorageConfig.storeFile(avatarFile, "avatars");
+            existingUser.setAvatar(avatarUrl);
+        }
+        
+        // 4. 保存并返回更新后的用户
+        return userRepository.save(existingUser);
     }
 
     @Override

@@ -24,19 +24,16 @@ public class ExamResultService {
 
     // 查询时返回不带User的DTO列表
     public List<ExamResultResponseDto> getUserExamResults(Integer userId) {
-        return examResultRepository.findByUserUserId(userId).stream()
+        return examResultRepository.findByUserId(userId).stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
     // 保存时返回不带User的DTO
     public ExamResultResponseDto saveExamResult(ExamResultDto examResultDTO) {
-        User user = userRepository.findById(examResultDTO.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
-
         ExamResult examResult = new ExamResult();
         BeanUtils.copyProperties(examResultDTO, examResult);
-        examResult.setUser(user);
+        examResult.setUserId(examResultDTO.getUserId());
 
         ExamResult savedResult = examResultRepository.save(examResult);
         return convertToResponseDTO(savedResult);

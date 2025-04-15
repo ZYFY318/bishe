@@ -37,6 +37,12 @@ public class FileStorageConfig implements WebMvcConfigurer {
                 Files.createDirectories(coversPath);
             }
             
+            // 创建avatars子目录
+            Path avatarsPath = fileStoragePath.resolve("avatars");
+            if (!Files.exists(avatarsPath)) {
+                Files.createDirectories(avatarsPath);
+            }
+            
             return fileStoragePath;
         } catch (IOException ex) {
             throw new RuntimeException("无法创建文件上传目录", ex);
@@ -44,9 +50,16 @@ public class FileStorageConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 保存上传的封面图片
+     * 保存上传的文件
      */
     public String storeFile(MultipartFile file) {
+        return storeFile(file, "covers"); // 默认存储到covers目录，保持向后兼容
+    }
+
+    /**
+     * 保存上传的文件到指定子目录
+     */
+    public String storeFile(MultipartFile file, String subDirectory) {
         try {
             // 检查文件是否为空
             if (file.isEmpty()) {
@@ -62,13 +75,13 @@ public class FileStorageConfig implements WebMvcConfigurer {
             
             // 生成唯一文件名
             String fileName = UUID.randomUUID().toString() + extension;
-            Path targetPath = fileStoragePath().resolve("covers").resolve(fileName);
+            Path targetPath = fileStoragePath().resolve(subDirectory).resolve(fileName);
             
             // 保存文件
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             
             // 返回相对路径
-            return "/uploads/covers/" + fileName;
+            return "/uploads/" + subDirectory + "/" + fileName;
         } catch (IOException ex) {
             throw new RuntimeException("无法存储文件", ex);
         }
