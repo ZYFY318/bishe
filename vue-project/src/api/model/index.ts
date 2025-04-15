@@ -6,7 +6,9 @@ import type { ModelListResponse, ModelQueryParams, ModelResponse, ModelUploadDat
 enum API {
   GET_MODEL_LIST = "/model",
   GET_MODEL_DATA = "/model",  // /{id}/data 获取模型二进制数据
-  UPLOAD_MODEL = "/model/upload"
+  UPLOAD_MODEL = "/model/upload",
+  DELETE_MODEL = "/model",  // 添加删除模型的API路径
+  GET_USER_MODELS = "/model/user" // 获取用户模型列表
 }
 
 // 获取模型列表
@@ -38,8 +40,8 @@ export const uploadModel = (data: ModelUploadData | FormData) => {
       console.log("设置creatorId:", data.creatorId.toString());
     }
     
-    if (data.image) {
-      formData.append('image', data.image);
+    if (data.cover) {
+      formData.append('cover', data.cover);
     }
   } else {
     // 如果已经是FormData，直接使用
@@ -57,5 +59,13 @@ export const uploadModel = (data: ModelUploadData | FormData) => {
     }
   });
 };
+
+// 删除模型
+export const deleteModel = (id: number) =>
+  request.delete<any, ModelResponse>(`${API.DELETE_MODEL}/${id}`);
+
+// 获取用户模型列表
+export const reqUserModels = (creatorId: number) =>
+  request.get<any, ModelListResponse>(`${API.GET_USER_MODELS}/${creatorId}`);
 
 

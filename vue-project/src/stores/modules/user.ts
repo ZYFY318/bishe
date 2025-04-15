@@ -19,6 +19,7 @@ let useUserStore = defineStore("User", {
       avatar: "",
       userId: 0,
       userType: "",
+      email: "",
     };
   },
   //异步|逻辑
@@ -45,7 +46,8 @@ let useUserStore = defineStore("User", {
         this.avatar = result.data.avatar;
         this.userId = result.data.userId;
         this.userType = result.data.userType;
-        console.log(this.avatar);
+        this.email = result.data.email || '';
+        console.log(result);
         return "ok";
       } else {
         return Promise.reject("获取用户信息失败");
@@ -58,6 +60,7 @@ let useUserStore = defineStore("User", {
       this.avatar = "";
       this.userId = 0;
       this.userType = "";
+      this.email = "";
       try {
         await reqLogout();
       } catch (error) {

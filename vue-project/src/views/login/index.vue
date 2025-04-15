@@ -67,6 +67,7 @@ const login = async () => {
         //保证登陆成功
         await useStore.userLogin(loginForm);
         // 不再使用redirect参数，直接跳转到主页
+        await useStore.userInfo();
         $router.push({ path: '/' });
         //登陆成功提示信息
         ElNotification({

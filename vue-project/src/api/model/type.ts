@@ -4,7 +4,7 @@ export interface ModelItem {
   name: string;
   description: string;
   created_at: string;
-  imageUrl?: string;
+  coverUrl?: string;
   creatorId?: number;
   creatorName?: string;
 }
@@ -19,6 +19,7 @@ export interface ModelListResponse {
 export interface ModelResponse {
   code: number;
   data: ModelItem;
+  message?: string;
 }
 
 // 模型请求参数接口
@@ -33,7 +34,7 @@ export interface ModelUploadData {
   name: string;
   description: string;
   file: File;
-  image?: File;
+  cover?: File;
   creatorId?: number;
 }
 

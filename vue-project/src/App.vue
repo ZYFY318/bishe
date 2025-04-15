@@ -13,6 +13,7 @@
 <style scoped lang="scss">
 .app1 {
   width: 100%;
+  
       // background: url('../assets/images/p1.png') no-repeat center center;
     // background-size: cover;
 }

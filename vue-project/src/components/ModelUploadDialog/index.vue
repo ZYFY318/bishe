@@ -22,6 +22,25 @@
         ></el-input>
       </el-form-item>
       
+      <el-form-item label="封面图片" prop="image">
+        <el-upload
+          class="image-uploader"
+          action="#"
+          :auto-upload="false"
+          :on-change="handleImageChange"
+          :limit="1"
+          accept="image/jpeg,image/png,image/jpg"
+        >
+          <img v-if="imageUrl" :src="imageUrl" class="preview-image" />
+          <el-icon v-else class="image-uploader-icon"><plus /></el-icon>
+          <template #tip>
+            <div class="el-upload__tip">
+              请上传 JPG/PNG 格式的图片作为模型封面
+            </div>
+          </template>
+        </el-upload>
+      </el-form-item>
+      
       <el-form-item label="模型文件" prop="file">
         <el-upload
           class="upload-demo"
@@ -63,6 +82,7 @@ import { ElMessage } from 'element-plus';
 import { uploadModel } from '@/api/model';
 import type { ModelUploadData } from '@/api/model/type';
 import useUserStore from '@/stores/modules/user';
+import { Plus, UploadFilled } from '@element-plus/icons-vue';
 
 const props = defineProps({
   visible: {
@@ -89,15 +109,20 @@ watch(() => dialogVisible.value, (newVal: boolean) => {
 // 表单引用
 const formRef = ref<FormInstance>();
 
+// 图片预览URL
+const imageUrl = ref('');
+
 // 表单数据
 const form = reactive<{
   name: string;
   description: string;
   file: File | null;
+  cover: File | null;
 }>({
   name: '',
   description: '',
-  file: null
+  file: null,
+  cover: null
 });
 
 // 表单验证规则
@@ -112,11 +137,42 @@ const rules = reactive<FormRules>({
   ],
   file: [
     { required: true, message: '请上传模型文件', trigger: 'change' }
+  ],
+  image: [
+    { required: false, message: '请上传封面图片', trigger: 'change' }
   ]
 });
 
 // 上传状态
 const uploading = ref(false);
+
+// 图片变更处理
+const handleImageChange = (file: any) => {
+  if (file && file.raw) {
+    // 检查文件类型
+    const isImage = file.raw.type === 'image/jpeg' || 
+                   file.raw.type === 'image/png' || 
+                   file.raw.type === 'image/jpg';
+    
+    if (!isImage) {
+      ElMessage.error('请上传JPG/PNG格式的图片!');
+      return false;
+    }
+    
+    // 检查文件大小（限制为5MB）
+    const isLt5M = file.raw.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      ElMessage.error('图片大小不能超过 5MB!');
+      return false;
+    }
+    
+    // 保存文件引用
+    form.cover = file.raw;
+    
+    // 创建预览URL
+    imageUrl.value = URL.createObjectURL(file.raw);
+  }
+};
 
 // 文件变更处理
 const handleFileChange = (file: any) => {
@@ -160,6 +216,11 @@ const handleUpload = async () => {
         formData.append('name', form.name);
         formData.append('description', form.description);
         
+        // 添加封面图片（如果有）
+        if (form.cover) {
+          formData.append('cover', form.cover);
+        }
+        
         // 确保userId是数字并正确传递
         if (userStore.userId) {
           formData.append('creatorId', userStore.userId.toString());
@@ -195,73 +256,42 @@ const handleClose = () => {
     formRef.value.resetFields();
   }
   form.file = null;
+  form.image = null;
+  imageUrl.value = '';
 };
 </script>
 
 <style scoped lang="scss">
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.upload-demo {
-  width: 100%;
-}
-
-:deep(.el-dialog) {
-  background-color: var(--card-bg);
-  border-radius: 10px;
-  box-shadow: var(--shadow);
-  
-  .el-dialog__title {
-    color: var(--text-color);
-  }
-  
-  .el-dialog__body {
-    color: var(--text-color);
-  }
-  
-  .el-form-item__label {
-    color: var(--text-color);
-  }
-  
-  .el-input__inner {
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    border-color: var(--border-color);
-  }
-  
-  .el-textarea__inner {
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    border-color: var(--border-color);
-  }
-  
-  .el-upload {
-    border-color: var(--border-color);
-    color: var(--text-color);
+.model-upload-dialog {
+  .image-uploader {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
     
     &:hover {
-      border-color: var(--primary-color);
+      border-color: var(--el-color-primary);
     }
-    
-    .el-icon--upload {
-      color: var(--text-color);
-    }
-    
-    .el-upload__text {
-      color: var(--text-color);
-      
-      em {
-        color: var(--primary-color);
-      }
-    }
-    
-    .el-upload__tip {
-      color: var(--text-color);
-      opacity: 0.8;
-    }
+  }
+  
+  .image-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .preview-image {
+    width: 178px;
+    height: 178px;
+    display: block;
+    object-fit: cover;
   }
 }
 </style> 

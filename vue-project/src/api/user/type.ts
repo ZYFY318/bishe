@@ -17,9 +17,11 @@ interface userInfo {
   avatar: string;
   username: string;
   userType: string;
+  email?: string;
   roles: string[];
   buttons: string[];
   routes: string[];
+  message?: string;
 }
 
 export interface loginResponseData {
@@ -38,4 +40,13 @@ export interface registerForm {
   password: string;
   userType: string;
   email?: string;
+}
+
+// 更新用户信息接口参数类型
+export interface updateUserForm {
+  userId?: number;
+  username?: string;
+  avatar?: string;
+  email?: string;
+  avatarFile?: File;
 }

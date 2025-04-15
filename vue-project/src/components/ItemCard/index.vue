@@ -1,8 +1,8 @@
 <template>
-  <el-card class="base-card model-card" @click="handleClick">
+  <el-card class="base-card model-card" :class="{ 'is-dragging': isDragging }" @click="handleClick" draggable="true" @dragstart="handleDragStart" @dragend="handleDragEnd">
     <div class="card-content">
       <div class="card-image">
-        <img :src="modelImage" alt="Model preview" />
+        <img :src="getImgUrl(props.modelItem.coverUrl)" alt="Model preview" />
       </div>
       <div class="card-info">
         <h3 class="card-title">{{ props.modelItem.name }}</h3>
@@ -19,13 +19,14 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed } from 'vue';
+import { defineProps, defineEmits, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import type { PropType } from 'vue';
 import type { ModelItem } from '@/api/model/type';
 import { Calendar, User } from '@element-plus/icons-vue';
 
 const router = useRouter();
+const emit = defineEmits(['drag-start']);
 
 // 定义组件的 props
 const props = defineProps({
@@ -35,10 +36,10 @@ const props = defineProps({
   }
 });
 
-// 计算属性：如果没有 imageUrl 则使用默认图片
-const modelImage = computed(() => {
-  return props.modelItem.imageUrl || '/hakasei.png';
-});
+// 拖拽状态
+const isDragging = ref(false);
+
+
 
 // 格式化日期
 const formatDate = (dateString: string) => {
@@ -54,6 +55,42 @@ const handleClick = () => {
       modelName: props.modelItem.name
     }
   });
+};
+// 获取完整的图片URL
+const getImgUrl = (url: string) => {
+  if (!url) return '/hakasei.png';
+  
+  // 如果是完整URL，直接返回
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // 如果是相对路径，添加API基础URL
+  const baseURL = import.meta.env.VITE_APP_BASE_API || 'http://localhost:9090';
+  
+  // 确保路径正确
+  if (url.startsWith('/')) {
+    return `${baseURL}${url}`;
+  } else {
+    return `${baseURL}/${url}`;
+  }
+};
+// 拖拽开始
+const handleDragStart = (event: DragEvent) => {
+  event.stopPropagation(); // 阻止点击事件触发
+  if (event.dataTransfer) {
+    event.dataTransfer.setData('modelId', props.modelItem.id.toString());
+    if (props.modelItem.creatorId) {
+      event.dataTransfer.setData('creatorId', props.modelItem.creatorId.toString());
+    }
+    isDragging.value = true;
+    emit('drag-start', props.modelItem);
+  }
+};
+
+// 拖拽结束
+const handleDragEnd = () => {
+  isDragging.value = false;
 };
 </script>
 
@@ -95,6 +132,12 @@ const handleClick = () => {
     color: var(--text-color);
     opacity: 0.8;
     margin: 10px 0;
+  }
+  
+  &.is-dragging {
+    opacity: 0.7;
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   }
 }
 </style>
