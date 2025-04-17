@@ -60,9 +60,9 @@
           </template>
           <template v-else-if="userModels.length > 0">
             <div v-for="model in userModels" :key="model.id" class="model-item">
-              <div class="model-content">
+              <div class="model-content" @click="goToModelDetails(model)">
                 <img 
-                  :src="getImgUrl(model.coverUrl)" 
+                  :src="getImgUrl(model.coverUrl || '')" 
                   class="model-image" 
                   alt="模型图片"
                 />
@@ -89,22 +89,38 @@
       </template>
       <el-scrollbar class="horizontal-scrollbar">
         <div class="assignments-container">
-          <!-- 模拟的作业项目 -->
-          <div class="assignment-item">
-            <div class="assignment-placeholder">作业1</div>
-          </div>
-          <div class="assignment-item">
-            <div class="assignment-placeholder">作业2</div>
-          </div>
-          <div class="assignment-item">
-            <div class="assignment-placeholder">作业3</div>
-          </div>
-          <div class="assignment-item">
-            <div class="assignment-placeholder">作业4</div>
-          </div>
-          <div class="assignment-item">
-            <div class="assignment-placeholder">作业5</div>
-          </div>
+          <template v-if="isLoadingExams">
+            <div v-for="i in 3" :key="i" class="assignment-item">
+              <el-skeleton :rows="2" animated />
+            </div>
+          </template>
+          <template v-else-if="userExams.length > 0">
+            <div 
+              v-for="exam in userExams" 
+              :key="exam.id" 
+              class="assignment-item exam-card"
+              @click="goToExamDetail(exam.id)"
+            >
+              <div class="card-content">
+                <div class="card-image">
+                  <img :src="getImgUrl(exam.coverUrl)" alt="试卷封面" />
+                </div>
+                <div class="card-info">
+                  <h3 class="card-title">{{ exam.title }}</h3>
+                  <div class="card-details">
+                    <p><el-icon><Timer /></el-icon> {{ exam.duration }} 分钟</p>
+                    <p><el-icon><Calendar /></el-icon> {{ new Date(exam.createdAt).toLocaleDateString() }}</p>
+                  </div>
+                  <div class="card-creator" v-if="exam.creatorName">
+                    <p><el-icon><User /></el-icon> {{ exam.creatorName }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="empty-message">暂无考试记录</div>
+          </template>
         </div>
       </el-scrollbar>
     </el-card>
@@ -152,15 +168,17 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Upload } from '@element-plus/icons-vue';
+import { ArrowLeft, Upload, Timer, Calendar, User } from '@element-plus/icons-vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import useUserStore from '@/stores/modules/user';
 import { ref, computed, onMounted } from 'vue';
 import { reqUserInfo, updateUserInfo } from '@/api/user';
 import { reqUserModels } from '@/api/model';
+import { fetchPublishedExams } from '@/api/product/exam';
 import type { updateUserForm } from '@/api/user/type';
 import type { ModelListResponse } from '@/api/model/type';
+import type { ExamItem } from '@/api/product/exam/type';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -192,6 +210,10 @@ const userTypeText = computed(() => {
 // 用户模型列表
 const userModels = ref<ModelListResponse['data']>([]);
 const isLoadingModels = ref(false);
+
+// 用户考试列表
+const userExams = ref<ExamItem[]>([]);
+const isLoadingExams = ref(false);
 
 // 获取完整的图片URL
 const getImgUrl = (url: string) => {
@@ -242,6 +264,24 @@ const fetchUserModels = async () => {
     ElMessage.error('获取模型列表失败');
   } finally {
     isLoadingModels.value = false;
+  }
+};
+
+// 获取发布的考试
+const fetchUserExams = async () => {
+  isLoadingExams.value = true;
+  try {
+    const response = await fetchPublishedExams();
+    if (response.code === 200) {
+      userExams.value = response.data;
+    } else {
+      ElMessage.error('获取考试列表失败');
+    }
+  } catch (error) {
+    console.error('获取考试列表失败:', error);
+    ElMessage.error('获取考试列表失败');
+  } finally {
+    isLoadingExams.value = false;
   }
 };
 
@@ -347,6 +387,25 @@ const submitEdit = async () => {
   }
 };
 
+// 导航函数定义，放在goBack函数下面
+const goToModelDetails = (model: ModelListResponse['data'][0]) => {
+  router.push({
+    path: '/showModel',
+    query: {
+      modelId: model.id,
+      modelName: model.name
+    }
+  });
+};
+
+// 跳转到考试详情
+const goToExamDetail = (examId: number) => {
+  router.push({
+    path: '/examview/take',
+    query: { examId }
+  });
+};
+
 // 组件挂载时初始化用户信息和模型列表
 onMounted(() => {
   // 检查pinia中是否已有数据
@@ -354,11 +413,13 @@ onMounted(() => {
     // 已有数据，直接使用
     fetchUserInfo();
     fetchUserModels();
+    fetchUserExams();
   } else {
     // 没有数据，可能是直接访问页面或刷新，需要重新请求
     userStore.userInfo().then(() => {
       fetchUserInfo();
       fetchUserModels();
+      fetchUserExams();
     }).catch(error => {
       console.error('获取用户信息失败:', error);
       ElMessage.error('获取用户信息失败');
@@ -529,6 +590,13 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .model-image {
@@ -568,5 +636,96 @@ onMounted(() => {
   text-align: center;
   color: var(--text-color-secondary);
   padding: 20px;
+}
+
+.assignment-item.exam-card {
+  width: 300px;
+  height: auto;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 15px;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(64, 158, 255, 0.3);
+  }
+  
+  .card-content {
+    display: flex;
+    padding: 15px;
+    color: var(--text-color);
+    
+    .card-image {
+      width: 100px;
+      height: 140px;
+      overflow: hidden;
+      border-radius: 10px;
+      flex-shrink: 0;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+    }
+    
+    .card-info {
+      flex: 1;
+      padding-left: 15px;
+      display: flex;
+      flex-direction: column;
+      
+      .card-title {
+        margin: 0 0 10px;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+      
+      .card-details {
+        p {
+          display: flex;
+          align-items: center;
+          margin: 5px 0;
+          font-size: 14px;
+          color: var(--text-color);
+          opacity: 0.8;
+          
+          .el-icon {
+            margin-right: 5px;
+          }
+        }
+      }
+      
+      .card-creator {
+        margin-top: 10px;
+        p {
+          display: flex;
+          align-items: center;
+          margin: 0;
+          font-size: 14px;
+          color: var(--text-color);
+          
+          .el-icon {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.assignment-content {
+  display: none;
+}
+
+.assignment-info {
+  display: none;
+}
+
+.assignment-name, .assignment-date, .assignment-duration {
+  display: none;
 }
 </style>

@@ -508,7 +508,7 @@ const submitExam = async () => {
 
 // 返回试卷列表
 const goBack = () => {
-  router.push('/study/exam-list');
+  router.back();
 };
 
 // 确认退出
