@@ -476,7 +476,8 @@ const submitExam = async () => {
       examDate: new Date().toISOString(),
       score,
       duration,
-      userAnswers: JSON.stringify(answers.value) // 保存用户答案
+      userAnswers: JSON.stringify(answers.value), // 保存用户答案
+      questionCount: totalQuestions // 添加题目数量字段
     };
     
     // 保存到本地状态，用于显示结果

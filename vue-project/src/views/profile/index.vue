@@ -94,9 +94,9 @@
               <el-skeleton :rows="2" animated />
             </div>
           </template>
-          <template v-else-if="userExams.length > 0">
+          <template v-else-if="publishedExams.length > 0">
             <div 
-              v-for="exam in userExams" 
+              v-for="exam in publishedExams" 
               :key="exam.id" 
               class="assignment-item exam-card"
               @click="goToExamDetail(exam.id)"
@@ -164,6 +164,18 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 最近七天考试情况 -->
+    <el-card class="profile-card">
+      <template #header>
+        <div class="card-header">
+          <span>历史考试情况</span>
+        </div>
+      </template>
+      <div class="chart-container">
+        <div ref="examChartRef" class="exam-chart"></div>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -172,13 +184,16 @@ import { ArrowLeft, Upload, Timer, Calendar, User } from '@element-plus/icons-vu
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import useUserStore from '@/stores/modules/user';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, reactive, onBeforeUnmount } from 'vue';
 import { reqUserInfo, updateUserInfo } from '@/api/user';
 import { reqUserModels } from '@/api/model';
+import { reqUserExamResults } from '@/api/examResult';
 import { fetchPublishedExams } from '@/api/product/exam';
 import type { updateUserForm } from '@/api/user/type';
 import type { ModelListResponse } from '@/api/model/type';
+import type { ExamResult } from '@/api/examResult/type';
 import type { ExamItem } from '@/api/product/exam/type';
+import * as echarts from 'echarts';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -211,9 +226,115 @@ const userTypeText = computed(() => {
 const userModels = ref<ModelListResponse['data']>([]);
 const isLoadingModels = ref(false);
 
-// 用户考试列表
-const userExams = ref<ExamItem[]>([]);
+// 用户考试结果（用于图表）
+const userExamResults = ref<ExamResult[]>([]);
+
+// 发布的试卷列表（用于我的作业板块）
+const publishedExams = ref<ExamItem[]>([]);
 const isLoadingExams = ref(false);
+
+// 折线图的DOM引用
+const examChartRef = ref<HTMLElement | null>(null);
+let chartInstance: echarts.ECharts | null = null;
+
+// 图表数据，将从API更新
+const examChartData = reactive({
+  dates: [] as string[],
+  scores: [] as number[],
+  questionCounts: [] as number[]
+});
+
+// 处理考试数据以用于图表显示
+const processExamData = (examResults: ExamResult[]) => {
+  // 按日期排序
+  const sortedResults = [...examResults].sort((a, b) => 
+    new Date(a.examDate).getTime() - new Date(b.examDate).getTime()
+  );
+  
+  // 提取日期、分数和题目数量
+  const dates = sortedResults.map(result => new Date(result.examDate).toLocaleDateString());
+  const scores = sortedResults.map(result => result.score);
+  const questionCounts = sortedResults.map(result => result.questionCount);
+  
+  return {
+    dates,
+    scores,
+    questionCounts
+  };
+};
+
+// 获取用户考试结果，用于图表显示
+const fetchUserExamResults = async () => {
+  if (!userStore.userId) return;
+  
+  try {
+    const response = await reqUserExamResults(userStore.userId);
+    // TypeScript解析有问题，使用any类型临时解决
+    const data = response as any;
+    if (data.code === 200 && Array.isArray(data.data)) {
+      userExamResults.value = data.data.map((exam: any, index: number) => ({
+        ...exam,
+        id: exam.id || index
+      }));
+      
+      // 更新图表数据
+      updateChartData(userExamResults.value);
+    } else {
+      ElMessage.error('获取考试记录失败');
+    }
+  } catch (error) {
+    console.error('获取考试记录失败:', error);
+    ElMessage.error('获取考试记录失败');
+  }
+};
+
+// 获取已发布的试卷列表，用于我的作业板块
+const fetchPublishedExamsList = async () => {
+  isLoadingExams.value = true;
+  try {
+    const response = await fetchPublishedExams();
+    if (response.code === 200) {
+      publishedExams.value = response.data;
+    } else {
+      ElMessage.error('获取试卷列表失败');
+    }
+  } catch (error) {
+    console.error('获取试卷列表失败:', error);
+    ElMessage.error('获取试卷列表失败');
+  } finally {
+    isLoadingExams.value = false;
+  }
+};
+
+// 同时获取两种数据
+const fetchAllData = async () => {
+  await Promise.all([
+    fetchUserExamResults(),
+    fetchPublishedExamsList()
+  ]);
+};
+
+// 更新图表数据
+const updateChartData = (examResults: ExamResult[]) => {
+  // 如果没有考试记录，使用空数据
+  if (!examResults || examResults.length === 0) {
+    examChartData.dates = [];
+    examChartData.scores = [];
+    examChartData.questionCounts = [];
+    return;
+  }
+  
+  // 处理考试数据
+  const processedData = processExamData(examResults);
+  examChartData.dates = processedData.dates;
+  examChartData.scores = processedData.scores;
+  examChartData.questionCounts = processedData.questionCounts;
+  
+  // 如果图表已初始化，则更新图表
+  if (chartInstance) {
+    initExamChart();
+  }
+};
 
 // 获取完整的图片URL
 const getImgUrl = (url: string) => {
@@ -267,21 +388,241 @@ const fetchUserModels = async () => {
   }
 };
 
-// 获取发布的考试
-const fetchUserExams = async () => {
-  isLoadingExams.value = true;
-  try {
-    const response = await fetchPublishedExams();
-    if (response.code === 200) {
-      userExams.value = response.data;
-    } else {
-      ElMessage.error('获取考试列表失败');
+// 导航函数定义，放在goBack函数下面
+const goToModelDetails = (model: ModelListResponse['data'][0]) => {
+  router.push({
+    path: '/showModel',
+    query: {
+      modelId: model.id,
+      modelName: model.name
     }
-  } catch (error) {
-    console.error('获取考试列表失败:', error);
-    ElMessage.error('获取考试列表失败');
-  } finally {
-    isLoadingExams.value = false;
+  });
+};
+
+// 跳转到考试详情
+const goToExamDetail = (examId: number) => {
+  router.push({
+    path: '/examview/take',
+    query: { examId , examTitle: publishedExams.value.find(exam => exam.id === examId)?.title || '未命名试卷'}
+  });
+};
+
+// 格式化考试用时
+const formatDuration = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  
+  let result = '';
+  if (hours > 0) {
+    result += `${hours}小时`;
+  }
+  if (minutes > 0 || hours > 0) {
+    result += `${minutes}分钟`;
+  }
+  result += `${secs}秒`;
+  
+  return result;
+};
+
+// 组件挂载时初始化用户信息和模型列表
+onMounted(() => {
+  // 检查pinia中是否已有数据
+  if (userStore.username) {
+    // 已有数据，直接使用
+    fetchUserInfo();
+    fetchUserModels();
+    fetchAllData(); // 获取考试记录和已发布试卷
+    // 初始化图表需要等DOM渲染完成
+    setTimeout(() => {
+      initExamChart();
+    }, 100);
+  } else {
+    // 没有数据，可能是直接访问页面或刷新，需要重新请求
+    userStore.userInfo().then(() => {
+      fetchUserInfo();
+      fetchUserModels();
+      fetchAllData(); // 获取考试记录和已发布试卷
+      // 初始化图表需要等DOM渲染完成
+      setTimeout(() => {
+        initExamChart();
+      }, 100);
+    }).catch(error => {
+      console.error('获取用户信息失败:', error);
+      ElMessage.error('获取用户信息失败');
+    });
+  }
+});
+
+onBeforeUnmount(() => {
+  // 清理图表实例
+  if (chartInstance) {
+    chartInstance.dispose();
+  }
+});
+
+// 初始化图表
+const initExamChart = () => {
+  if (examChartRef.value) {
+    // 确保销毁旧实例
+    if (chartInstance) {
+      chartInstance.dispose();
+    }
+    
+    // 创建新实例
+    chartInstance = echarts.init(examChartRef.value);
+    
+    // 如果没有数据，显示无数据提示
+    if (examChartData.dates.length === 0) {
+      chartInstance.setOption({
+        title: {
+          text: '暂无考试记录',
+          left: 'center',
+          top: 'center',
+          textStyle: {
+            color: '#909399',
+            fontSize: 16
+          }
+        }
+      });
+      return;
+    }
+    
+    // 配置图表选项
+    const option = {
+      title: {
+        text: '历史考试情况',
+        left: 'center',
+        textStyle: {
+          color: '#606266'
+        }
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985'
+          }
+        }
+      },
+      legend: {
+        data: ['考试分数', '试卷题量'],
+        top: 30,
+        textStyle: {
+          color: '#606266'
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%', // 为datazoom留出空间
+        containLabel: true
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      dataZoom: [
+        {
+          type: 'slider',
+          show: true,
+          xAxisIndex: [0],
+          start: 0,
+          end: 100,
+          bottom: 10
+        },
+        {
+          type: 'inside', // 启用内部缩放
+          xAxisIndex: [0],
+          start: 0,
+          end: 100
+        }
+      ],
+      xAxis: [
+        {
+          type: 'category',
+          boundaryGap: false,
+          data: examChartData.dates,
+          axisLabel: {
+            color: '#606266'
+          }
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          name: '分数',
+          position: 'left',
+          min: 0,
+          max: 100,
+          interval: 20,
+          axisLabel: {
+            formatter: '{value}',
+            color: '#606266'
+          }
+        },
+        {
+          type: 'value',
+          name: '试卷题量',
+          position: 'right',
+          min: 0,
+          max: Math.max(...examChartData.questionCounts, 30) + 10, // 动态设置最大值
+          interval: 10,
+          axisLabel: {
+            formatter: '{value}',
+            color: '#606266'
+          }
+        }
+      ],
+      series: [
+        {
+          name: '考试分数',
+          type: 'line',
+          smooth: true,
+          emphasis: {
+            focus: 'series'
+          },
+          yAxisIndex: 0,
+          data: examChartData.scores,
+          itemStyle: {
+            color: '#409EFF'
+          },
+          lineStyle: {
+            width: 3
+          }
+        },
+        {
+          name: '试卷题量',
+          type: 'line',
+          smooth: true,
+          emphasis: {
+            focus: 'series'
+          },
+          yAxisIndex: 1,
+          data: examChartData.questionCounts,
+          itemStyle: {
+            color: '#67C23A'
+          },
+          lineStyle: {
+            width: 3
+          }
+        }
+      ]
+    };
+    
+    // 应用配置
+    if (chartInstance) {
+      chartInstance.setOption(option);
+      
+      // 添加窗口大小变化监听，自适应大小
+      window.addEventListener('resize', () => {
+        if (chartInstance) {
+          chartInstance.resize();
+        }
+      });
+    }
   }
 };
 
@@ -386,46 +727,6 @@ const submitEdit = async () => {
     isSubmitting.value = false;
   }
 };
-
-// 导航函数定义，放在goBack函数下面
-const goToModelDetails = (model: ModelListResponse['data'][0]) => {
-  router.push({
-    path: '/showModel',
-    query: {
-      modelId: model.id,
-      modelName: model.name
-    }
-  });
-};
-
-// 跳转到考试详情
-const goToExamDetail = (examId: number) => {
-  router.push({
-    path: '/examview/take',
-    query: { examId }
-  });
-};
-
-// 组件挂载时初始化用户信息和模型列表
-onMounted(() => {
-  // 检查pinia中是否已有数据
-  if (userStore.username) {
-    // 已有数据，直接使用
-    fetchUserInfo();
-    fetchUserModels();
-    fetchUserExams();
-  } else {
-    // 没有数据，可能是直接访问页面或刷新，需要重新请求
-    userStore.userInfo().then(() => {
-      fetchUserInfo();
-      fetchUserModels();
-      fetchUserExams();
-    }).catch(error => {
-      console.error('获取用户信息失败:', error);
-      ElMessage.error('获取用户信息失败');
-    });
-  }
-});
 </script>
 
 <style scoped lang="scss">
@@ -699,7 +1000,7 @@ onMounted(() => {
         }
       }
       
-      .card-creator {
+      .card-score {
         margin-top: 10px;
         p {
           display: flex;
@@ -708,7 +1009,7 @@ onMounted(() => {
           font-size: 14px;
           color: var(--text-color);
           
-          .el-icon {
+          strong {
             margin-right: 5px;
           }
         }
@@ -727,5 +1028,20 @@ onMounted(() => {
 
 .assignment-name, .assignment-date, .assignment-duration {
   display: none;
+}
+
+/* 图表样式 */
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 400px;
+  padding: 20px 0;
+}
+
+.exam-chart {
+  width: 100%;
+  height: 100%;
 }
 </style>

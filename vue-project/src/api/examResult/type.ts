@@ -6,6 +6,7 @@ export interface ExamResult {
   score: number;
   duration: number;
   userAnswers?: string; // JSON 字符串
+  questionCount: number; // 试卷题目数量
 }
 
 // 统一的 API 响应格式
