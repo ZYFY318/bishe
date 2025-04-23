@@ -28,9 +28,28 @@ public class Exam {
     @Column(name = "creator_id")
     private Integer creatorId;
     
+    @Column(name = "question_count", columnDefinition = "INTEGER DEFAULT 0")
+    private Integer questionCount = 0; // 题目数量
+    
+    @Column(name = "total_score", columnDefinition = "INTEGER DEFAULT 100")
+    private Integer totalScore = 100; // 总分值
+    
+    @Column(name = "passing_score", columnDefinition = "INTEGER DEFAULT 60")
+    private Integer passingScore = 60; // 及格分数线
+    
     // 创建者用户名，不映射到数据库
     @Transient
     private String creatorName;
+    
+    // 统计数据，不映射到数据库
+    @Transient
+    private Integer participantCount; // 参与人数
+    
+    @Transient
+    private Double avgScore; // 平均分数
+    
+    @Transient
+    private Integer passingCount; // 及格人数
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

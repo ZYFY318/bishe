@@ -6,4 +6,9 @@ import java.util.List;
 
 public interface ExamResultRepository extends JpaRepository<ExamResult, Integer> {
     List<ExamResult> findByUserId(Integer userId); // 根据用户 ID 查询考试成绩
+    
+    /**
+     * 根据考试ID查询所有考试结果
+     */
+    List<ExamResult> findByExamId(Integer examId);
 }

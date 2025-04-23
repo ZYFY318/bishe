@@ -23,6 +23,8 @@ public class SecurityConfig {
                         .requestMatchers("/exam-results,","/exam-results/**").permitAll()
                         .requestMatchers("/model,", "/model/**").permitAll()
                         .requestMatchers("/exams,", "/exams/**").permitAll()
+                                .requestMatchers("/exam-statistics,", "exam-statistics/**").permitAll()
+                                .requestMatchers("/question-analysis,", "question-analysis/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // 允许访问上传的文件
                         .anyRequest().authenticated() // 其他接口需认证
                 );
