@@ -10,6 +10,14 @@
         <el-icon><Edit /></el-icon>
         编辑试卷
       </el-button>
+      <el-button type="primary" @click="goToStatistics" v-if="canEdit">
+        <el-icon><Document /></el-icon>
+        查看统计数据
+      </el-button>
+      <el-button type="primary" @click="goToQuestionAnalysis" v-if="canEdit">
+        <el-icon><PieChart /></el-icon>
+        查看题目分析
+      </el-button>
     </div>
     
     <div class="exam-content">
@@ -46,7 +54,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ArrowLeft, DocumentCopy, Edit } from '@element-plus/icons-vue';
+import { ArrowLeft, DocumentCopy, Edit, Document, PieChart } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { getExamQuestions } from '@/api/product/exam';
 import type { QuestionItem } from '@/api/product/exam/type';
@@ -109,6 +117,18 @@ const goToEdit = () => {
       examTitle: examTitle.value
     }
   });
+};
+
+// 前往查看统计数据页面
+const goToStatistics = () => {
+  router.push({
+    path: `/exam-analytics/${examId.value}`,
+  });
+};
+
+// 前往题目分析页面
+const goToQuestionAnalysis = () => {
+  router.push(`/question-analysis/${examId.value}`);
 };
 
 onMounted(() => {

@@ -205,6 +205,30 @@ export const constantRoute = [
       },
     ],
   },
+  // 考试分析页面，用于教师查看学生考试情况
+  {
+    path: "/exam-analytics/:id",
+    component: () => import("@/views/exam-analytics/index.vue"),
+    name: "ExamAnalytics",
+    meta: {
+      hidden: true,
+      title: "考试统计",
+      fullscreen: false,
+      roles: ["TEACHER"],
+    },
+  },
+  // 添加考试分析（新路径）
+  {
+    path: "/exam-analysis/:id",
+    component: () => import("@/views/exam-analysis/index.vue"),
+    name: "ExamAnalysis",
+    meta: {
+      hidden: true,
+      title: "考试分析",
+      fullscreen: false,
+      roles: ["TEACHER"],
+    },
+  },
   {
     path: "/showModel",
     component: () => import("@/views/showModel/index.vue"),
@@ -224,6 +248,18 @@ export const constantRoute = [
       title: "3D模拟游戏",
       icon: "Orange",
       roles: ["STUDENT"],
+    },
+  },
+  // 添加题目分析页面的路由
+  {
+    path: "/question-analysis/:id",
+    component: () => import("@/views/question-analysis/index.vue"),
+    name: "QuestionAnalysis",
+    meta: {
+      hidden: true,
+      title: "题目分析",
+      fullscreen: false,
+      roles: ["TEACHER"],
     },
   },
 ];

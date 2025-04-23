@@ -24,4 +24,6 @@ let router = createRouter({
 //   }
 // });
 
+// 添加考试统计分析页面的路由
+
 export default router;

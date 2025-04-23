@@ -229,6 +229,7 @@ import { Timer, User, Warning, DocumentCopy, ArrowLeft } from '@element-plus/ico
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { getExamQuestions, fetchExamDetail } from '@/api/product/exam';
 import { reqSaveExamResult, reqUserExamResults } from '@/api/examResult';
+import { updateQuestionAnalysis } from '@/api/exam-statistics';
 import type { QuestionItem, ExamItem } from '@/api/product/exam/type';
 import type { ExamResult } from '@/api/examResult/type';
 import useUserStore from '@/stores/modules/user';
@@ -492,6 +493,14 @@ const submitExam = async () => {
     if (result.code === 200) {
       // 设置已完成状态
       isCompleted.value = true;
+      
+      // 更新题目分析数据
+      try {
+        await updateQuestionAnalysis(examId.value);
+      } catch (error) {
+        console.error('更新题目分析失败:', error);
+      }
+      
       // 显示结果对话框
       showConfirmDialog.value = false;
       showResultDialog.value = true;

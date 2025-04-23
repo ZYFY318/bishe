@@ -80,11 +80,11 @@
       </el-scrollbar>
     </el-card>
     
-    <!-- 我的作业板块 -->
+    <!-- 我的作业/发布的考试板块，根据用户类型显示不同标题 -->
     <el-card class="profile-card">
       <template #header>
         <div class="card-header">
-          <span>我的作业</span>
+          <span>{{ isTeacher ? '发布的考试' : '我的作业' }}</span>
         </div>
       </template>
       <el-scrollbar class="horizontal-scrollbar">
@@ -119,7 +119,7 @@
             </div>
           </template>
           <template v-else>
-            <div class="empty-message">暂无考试记录</div>
+            <div class="empty-message">{{ isTeacher ? '暂无发布的考试' : '暂无考试记录' }}</div>
           </template>
         </div>
       </el-scrollbar>
@@ -165,8 +165,8 @@
       </template>
     </el-dialog>
 
-    <!-- 最近七天考试情况 -->
-    <el-card class="profile-card">
+    <!-- 历史考试情况 - 仅对学生显示 -->
+    <el-card v-if="!isTeacher" class="profile-card">
       <template #header>
         <div class="card-header">
           <span>历史考试情况</span>
@@ -198,6 +198,9 @@ import * as echarts from 'echarts';
 const router = useRouter();
 const userStore = useUserStore();
 const defaultAvatar = '/default-avatar.png'; // 默认头像路径
+
+// 判断是否是教师用户
+const isTeacher = computed(() => userStore.userType === 'TEACHER');
 
 // 编辑表单
 const dialogVisible = ref(false);
@@ -263,9 +266,9 @@ const processExamData = (examResults: ExamResult[]) => {
   };
 };
 
-// 获取用户考试结果，用于图表显示
+// 获取用户考试结果，用于图表显示 - 仅针对学生用户
 const fetchUserExamResults = async () => {
-  if (!userStore.userId) return;
+  if (!userStore.userId || isTeacher.value) return;
   
   try {
     const response = await reqUserExamResults(userStore.userId);
@@ -306,12 +309,16 @@ const fetchPublishedExamsList = async () => {
   }
 };
 
-// 同时获取两种数据
+// 同时获取两种数据 - 基于用户类型选择性获取
 const fetchAllData = async () => {
-  await Promise.all([
-    fetchUserExamResults(),
-    fetchPublishedExamsList()
-  ]);
+  const fetchPromises = [fetchPublishedExamsList()];
+  
+  // 只有学生才需要获取考试结果
+  if (!isTeacher.value) {
+    fetchPromises.push(fetchUserExamResults());
+  }
+  
+  await Promise.all(fetchPromises);
 };
 
 // 更新图表数据
@@ -401,10 +408,24 @@ const goToModelDetails = (model: ModelListResponse['data'][0]) => {
 
 // 跳转到考试详情
 const goToExamDetail = (examId: number) => {
-  router.push({
-    path: '/examview/take',
-    query: { examId , examTitle: publishedExams.value.find(exam => exam.id === examId)?.title || '未命名试卷'}
-  });
+  // 教师跳转到考试分析页面，学生跳转到考试界面
+  if (isTeacher.value) {
+    router.push({
+      path: `/exam-analysis/${examId}`,
+      query: { 
+        examId,
+        examTitle: publishedExams.value.find(exam => exam.id === examId)?.title || '未命名试卷'
+      }
+    });
+  } else {
+    router.push({
+      path: '/examview/take',
+      query: { 
+        examId,
+        examTitle: publishedExams.value.find(exam => exam.id === examId)?.title || '未命名试卷'
+      }
+    });
+  }
 };
 
 // 格式化考试用时
@@ -433,20 +454,28 @@ onMounted(() => {
     fetchUserInfo();
     fetchUserModels();
     fetchAllData(); // 获取考试记录和已发布试卷
-    // 初始化图表需要等DOM渲染完成
-    setTimeout(() => {
-      initExamChart();
-    }, 100);
+    
+    // 仅对学生用户初始化图表
+    if (!isTeacher.value) {
+      // 初始化图表需要等DOM渲染完成
+      setTimeout(() => {
+        initExamChart();
+      }, 100);
+    }
   } else {
     // 没有数据，可能是直接访问页面或刷新，需要重新请求
     userStore.userInfo().then(() => {
       fetchUserInfo();
       fetchUserModels();
       fetchAllData(); // 获取考试记录和已发布试卷
-      // 初始化图表需要等DOM渲染完成
-      setTimeout(() => {
-        initExamChart();
-      }, 100);
+      
+      // 仅对学生用户初始化图表
+      if (!isTeacher.value) {
+        // 初始化图表需要等DOM渲染完成
+        setTimeout(() => {
+          initExamChart();
+        }, 100);
+      }
     }).catch(error => {
       console.error('获取用户信息失败:', error);
       ElMessage.error('获取用户信息失败');
@@ -463,6 +492,9 @@ onBeforeUnmount(() => {
 
 // 初始化图表
 const initExamChart = () => {
+  // 如果是教师用户，不初始化图表
+  if (isTeacher.value) return;
+  
   if (examChartRef.value) {
     // 确保销毁旧实例
     if (chartInstance) {
