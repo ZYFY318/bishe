@@ -110,7 +110,12 @@
         modelUrl,
         (gltf) => {
           const model = gltf.scene;
-          
+          model.traverse((child) => {
+  if (child.isMesh) {
+    console.log(child.name); // 输出每个可交互物体的名称
+  }
+});
+
           // 计算模型的包围盒
           const box = new THREE.Box3().setFromObject(model);
           const size = box.getSize(new THREE.Vector3());

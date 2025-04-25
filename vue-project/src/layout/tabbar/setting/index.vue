@@ -19,8 +19,7 @@
         />
       </div>
     </el-tooltip>
-    
-    <img :src="userStore.avatar" class="user-avatar">
+    <img :src="getImgUrl(userStore.avatar)" class="user-avatar">
     <el-dropdown>
         <span class="el-dropdown-link">
             <span class="username">{{ userStore.username }}</span>
@@ -58,6 +57,25 @@ const isDarkTheme = computed({
 // 切换主题
 const changeTheme = () => {
   LayOutSettingStore.toggleTheme();
+};
+
+const getImgUrl = (url: string) => {
+  if (!url) return '/hakasei.png';
+  
+  // 如果是完整URL，直接返回
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // 如果是相对路径，添加API基础URL
+  const baseURL = import.meta.env.VITE_APP_BASE_API || 'http://localhost:9090';
+  
+  // 确保路径正确
+  if (url.startsWith('/')) {
+    return `${baseURL}${url}`;
+  } else {
+    return `${baseURL}/${url}`;
+  }
 };
 
 const update = () => {
