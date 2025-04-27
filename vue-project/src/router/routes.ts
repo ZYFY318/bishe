@@ -250,6 +250,17 @@ export const constantRoute = [
       roles: ["STUDENT"],
     },
   },
+  {
+    path: "/product/rotation-demo",
+    component: () => import("@/views/product/rotation-demo/index.vue"),
+    name: "rotation-demo",
+    meta: {
+      hidden: false,
+      title: "ceshi",
+      icon: "Orange",
+      roles: ["STUDENT"],
+    },
+  },
   // 添加题目分析页面的路由
   {
     path: "/question-analysis/:id",
