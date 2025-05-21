@@ -1,0 +1,330 @@
+<template>
+    <el-dialog title="添加新课程" v-model="dialogVisible" width="500px" :before-close="handleClose" append-to-body
+        destroy-on-close :close-on-click-modal="false" class="course-upload-dialog">
+        <el-form :model="form" label-width="100px" :rules="rules" ref="formRef">
+            <el-form-item label="课程名称" prop="title">
+                <el-input v-model="form.title" placeholder="请输入课程名称"></el-input>
+            </el-form-item>
+
+            <el-form-item label="课程时长" prop="duration">
+                <el-input-number v-model="form.duration" :min="5" :max="180" :step="5" controls-position="right" />
+                <span class="duration-unit">分钟</span>
+            </el-form-item>
+
+            <el-form-item label="课程封面" prop="cover">
+                <el-upload class="cover-uploader" action="#" :auto-upload="false" :on-change="handleCoverChange"
+                    :limit="1" accept="image/jpeg,image/png,image/gif">
+                    <div v-if="coverUrl" class="cover-preview">
+                        <img :src="coverUrl" class="cover-img">
+                        <div class="cover-actions">
+                            <el-icon @click.stop="removeCover">
+                                <Delete />
+                            </el-icon>
+                        </div>
+                    </div>
+                    <el-icon v-else class="cover-uploader-icon">
+                        <Plus />
+                    </el-icon>
+                </el-upload>
+                <div class="el-upload__tip">请上传课程封面图片（JPEG/PNG/GIF）</div>
+            </el-form-item>
+        </el-form>
+
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="handleClose">取消</el-button>
+                <el-button type="primary" @click="handleSubmit" :loading="submitting">
+                    创建
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, watch } from 'vue';
+import { Delete, Plus } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
+import { createCourse } from '@/api/product/course'; // 引入创建课程API
+import type { CourseCreateData } from '@/api/product/course/type'; // 引入课程创建参数类型
+import useUserStore from '@/stores/modules/user';
+
+const props = defineProps({
+    visible: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits(['update:visible', 'uploaded']);
+
+// 对话框可见性
+const dialogVisible = ref(props.visible);
+
+// 监听visible变化
+watch(() => props.visible, (newVal: boolean) => {
+    dialogVisible.value = newVal;
+});
+
+// 监听dialogVisible变化
+watch(() => dialogVisible.value, (newVal: boolean) => {
+    emit('update:visible', newVal);
+});
+
+// 表单引用
+const formRef = ref<FormInstance>();
+
+// 封面预览URL
+const coverUrl = ref('');
+
+// 提交状态
+const submitting = ref(false);
+
+// 表单数据
+const form = reactive({
+    title: '',
+    duration: 60,
+    cover: null as File | null
+});
+
+// 表单验证规则
+const rules = reactive<FormRules>({
+    title: [
+        { required: true, message: '请输入课程名称', trigger: 'blur' },
+        { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
+    ],
+    duration: [
+        { required: true, message: '请设置课程时长', trigger: 'change' },
+        { type: 'number', min: 5, max: 180, message: '时长在 5 到 180 分钟之间', trigger: 'change' }
+    ],
+    cover: [
+        { required: true, message: '请上传课程封面', trigger: 'change' }
+    ]
+});
+
+// 封面变更处理
+const handleCoverChange = (file: any) => {
+    if (!file) return;
+
+    // 检查文件类型
+    const isImage = file.raw.type.startsWith('image/');
+    if (!isImage) {
+        ElMessage.error('请上传图片文件!');
+        return;
+    }
+
+    // 检查文件大小（限制为5MB）
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+        ElMessage.error('图片大小不能超过 5MB!');
+        return;
+    }
+
+    form.cover = file.raw;
+    coverUrl.value = URL.createObjectURL(file.raw);
+};
+
+// 移除封面
+const removeCover = () => {
+    form.cover = null;
+    if (coverUrl.value) {
+        URL.revokeObjectURL(coverUrl.value);
+        coverUrl.value = '';
+    }
+};
+
+// 提交处理
+const handleSubmit = async () => {
+    if (!formRef.value) return;
+
+    await formRef.value.validate(async (valid) => {
+        if (valid) {
+            submitting.value = true;
+
+            try {
+                // 导入用户仓库以获取用户ID
+                const userStore = useUserStore();
+
+                // 创建课程数据对象，确保类型正确
+                const courseData: CourseCreateData = {
+                    title: form.title,
+                    duration: form.duration,
+                    creatorId: userStore.userId // 添加创建者ID
+                };
+
+                // 只有当 cover 存在时才添加到对象中
+                if (form.cover) {
+                    courseData.cover = form.cover;
+                }
+
+                // 调用API创建课程
+                const res = await createCourse(courseData);
+
+                if (res.code === 200) {
+                    ElMessage.success(res.message || '课程创建成功');
+                    emit('uploaded');
+                    handleClose();
+                } else {
+                    ElMessage.error(res.message || '创建失败');
+                }
+            } catch (error) {
+                console.error('创建课程失败:', error);
+                ElMessage.error('创建失败，请重试');
+            } finally {
+                submitting.value = false;
+            }
+        }
+    });
+};
+
+// 关闭对话框
+const handleClose = () => {
+    dialogVisible.value = false;
+    // 重置表单
+    if (formRef.value) {
+        formRef.value.resetFields();
+    }
+    form.cover = null;
+    if (coverUrl.value) {
+        URL.revokeObjectURL(coverUrl.value);
+        coverUrl.value = '';
+    }
+};
+</script>
+
+<style scoped lang="scss">
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.duration-unit {
+    margin-left: 10px;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.cover-uploader {
+    text-align: center;
+
+    :deep(.el-upload) {
+        border: 1px dashed var(--border-color);
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.3s;
+
+        &:hover {
+            border-color: var(--primary-color);
+        }
+    }
+}
+
+.cover-uploader-icon {
+    font-size: 28px;
+    color: var(--text-color);
+    opacity: 0.5;
+    width: 178px;
+    height: 178px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cover-preview {
+    width: 178px;
+    height: 178px;
+    position: relative;
+    overflow: hidden;
+
+    .cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cover-actions {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s;
+
+        .el-icon {
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+:deep(.el-dialog) {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+
+    .el-dialog__title {
+        color: var(--text-color);
+    }
+
+    .el-dialog__body {
+        color: var(--text-color);
+    }
+
+    .el-form-item__label {
+        color: var(--text-color);
+    }
+
+    .el-input__inner {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-color: var(--border-color);
+    }
+
+    .el-textarea__inner {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-color: var(--border-color);
+    }
+
+    .el-input-number {
+        .el-input__wrapper {
+            background-color: var(--card-bg);
+
+            .el-input__inner {
+                color: var(--text-color);
+            }
+        }
+
+        .el-input-number__decrease,
+        .el-input-number__increase {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+
+            &:hover {
+                color: var(--primary-color);
+            }
+        }
+    }
+
+    .el-upload__tip {
+        color: var(--text-color);
+        opacity: 0.8;
+    }
+}
+</style>

@@ -72,7 +72,6 @@ export const constantRoute = [
       hidden: false,
       title: "个人中心",
       icon: "Platform",
-
     },
   },
   {
@@ -134,6 +133,17 @@ export const constantRoute = [
           roles: ["TEACHER"],
         },
       },
+      {
+        path: "/product/course",
+        component: () => import("@/views/product/course/index.vue"),
+        name: "Course",
+        meta: {
+          hidden: false,
+          title: "课程管理",
+          icon: "Notebook",
+          roles: ["TEACHER"],
+        },
+      },
     ],
   },
   // 学生的课程学习菜单
@@ -169,7 +179,7 @@ export const constantRoute = [
     name: "ExamViewLayout",
     meta: {
       hidden: true,
-      title: "nihaoa"
+      title: "nihaoa",
     },
     children: [
       {
