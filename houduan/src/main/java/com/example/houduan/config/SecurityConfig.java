@@ -26,6 +26,7 @@ public class SecurityConfig {
                                 .requestMatchers("/exam-statistics,", "exam-statistics/**").permitAll()
                                 .requestMatchers("/question-analysis,", "question-analysis/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // 允许访问上传的文件
+                                .requestMatchers("/courses,","courses/**").permitAll()
                         .anyRequest().authenticated() // 其他接口需认证
                 );
         return http.build();
