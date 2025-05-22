@@ -18,8 +18,11 @@ public class CourseDto {
     private Integer duration;
 
     private String coverUrl;
+    
+    private String videoUrl;
+    
+    private String description;
 
     private Integer creatorId;
-
 
 }

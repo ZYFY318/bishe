@@ -23,6 +23,12 @@ public class Course {
 
     @Column(name = "cover_url")
     private String coverUrl;
+    
+    @Column(name = "video_url")
+    private String videoUrl;
+    
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 
     @Column(name = "creator_id", nullable = false)
     private Integer creatorId;

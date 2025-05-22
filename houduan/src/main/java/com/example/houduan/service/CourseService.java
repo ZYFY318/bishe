@@ -93,6 +93,35 @@ public class CourseService implements ICourseService {
         courseRepository.delete(course);
     }
 
+    @Override
+    @Transactional
+    public Course publishCourse(Integer courseId, Boolean published) {
+        Course course = getCourseById(courseId);
+        course.setIsPublished(published);
+        Course updatedCourse = courseRepository.save(course);
+        fillCreatorName(updatedCourse);
+        return updatedCourse;
+    }
+
+@Override
+public Course updateCourseContent(Integer id, CourseDto courseDto) {
+    Course course = getCourseById(id);
+    if (course == null) {
+        throw new RuntimeException("课程不存在");
+    }
+    
+    // 更新课程内容
+    if (courseDto.getDescription() != null) {
+        course.setDescription(courseDto.getDescription());
+    }
+    
+    if (courseDto.getVideoUrl() != null) {
+        course.setVideoUrl(courseDto.getVideoUrl());
+    }
+    
+    return courseRepository.save(course);
+}
+
     /**
      * 填充单个课程的创建者名称
      */

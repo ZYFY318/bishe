@@ -12,4 +12,13 @@ public interface ICourseService {
     Course createCourse(CourseDto courseDto, MultipartFile cover);
     Course updateCourse(Integer id, CourseDto courseDto, MultipartFile cover);
     void deleteCourse(Integer id);
+Course updateCourseContent(Integer id, CourseDto courseDto);
+
+/**
+ * 发布或取消发布课程
+ * @param courseId 课程ID
+ * @param published 是否发布
+ * @return 操作后的课程对象
+ */
+Course publishCourse(Integer courseId, Boolean published);
 }
