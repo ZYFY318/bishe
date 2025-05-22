@@ -45,3 +45,9 @@ export interface CourseUpdateData {
   duration?: number;
   cover?: File;
 }
+
+// 课程内容更新请求参数
+export interface CourseContentUpdateData {
+  description?: string;
+  videoUrl?: string;
+}

@@ -6,6 +6,7 @@ import type {
   CourseCreateData,
   CourseCreateResponse,
   CourseUpdateData,
+  CourseContentUpdateData, // 导入新添加的类型
   // 假设存在发布课程响应类型，若不存在需添加
   CoursePublishResponse,
 } from "./type";
@@ -19,6 +20,8 @@ enum API {
   DELETE_COURSE = "/courses/delete",
   // 添加发布课程 API
   PUBLISH_COURSE = "/courses/publish",
+  // 添加更新课程内容 API
+  UPDATE_COURSE_CONTENT = "/courses/content",
 }
 
 // 获取课程列表
@@ -27,7 +30,7 @@ export const fetchCourseList = () =>
 
 // 获取课程详情
 export const fetchCourseDetail = (id: number) =>
-  request.get<any, CourseResponse>(`${API.GET_COURSE_DETAIL}${id}`);
+  request.get<any, CourseResponse>(`${API.GET_COURSE_DETAIL}/${id}`);
 
 // 创建课程
 export const createCourse = (data: CourseCreateData) => {
@@ -69,12 +72,20 @@ export const updateCourse = (id: number, data: CourseUpdateData) => {
   );
 };
 
+// 更新课程内容（视频链接和描述）
+export const updateCourseContent = (id: number, data: CourseContentUpdateData) => {
+  return request.put<any, CourseResponse>(
+    `${API.UPDATE_COURSE_CONTENT}/${id}`,
+    data
+  );
+};
+
 // 删除课程
 export const deleteCourse = (id: number) =>
   request.delete<any, CourseResponse>(`${API.DELETE_COURSE}${id}`);
 
 // 发布/取消发布课程
-export const publishCourse = (id: number, isPublished: boolean) =>
-  request.post<any, CoursePublishResponse>(`${API.PUBLISH_COURSE}${id}`, {
-    isPublished,
+export const publishCourse = (id: number, published: boolean = true) =>
+  request.put<any, CoursePublishResponse>(`${API.PUBLISH_COURSE}/${id}`, {
+    published,
   });

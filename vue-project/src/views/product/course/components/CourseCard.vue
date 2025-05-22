@@ -41,14 +41,14 @@ interface CourseItem {
     coverUrl: string;
     duration: number;
     createdAt: string;
-    published?: boolean;
+    isPublished: boolean;
 }
 
 // 定义props
 const props = defineProps<{
     course: CourseItem;
 }>();
-
+console.log(props.course);
 // 定义emit事件
 const emit = defineEmits<{
     (e: 'course-updated', courseId: number): void;
@@ -58,7 +58,7 @@ const router = useRouter();
 const publishing = ref(false);
 
 // 计算属性：是否已发布
-const isPublished = computed(() => !!props.course.published);
+const isPublished = computed(() => !!props.course.isPublished);
 
 // 拖拽状态
 const isDragging = ref(false);

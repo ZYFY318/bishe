@@ -215,6 +215,28 @@ export const constantRoute = [
       },
     ],
   },
+  // 将课程预览添加为独立的顶级路由
+  {
+    path: "/courseview",
+    component: () => import("@/layout/fullscreen.vue"), // 使用全屏布局
+    name: "CourseViewLayout",
+    meta: {
+      hidden: true,
+      title: "课程详情",
+    },
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/product/courseview/index.vue"),
+        name: "CourseView",
+        meta: {
+          hidden: true,
+          title: "课程详情",
+          fullscreen: true,
+        },
+      },
+    ],
+  },
   // 考试分析页面，用于教师查看学生考试情况
   {
     path: "/exam-analytics/:id",
